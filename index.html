@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- README:
+  To read .csv files correctly, this must be loaded on an actual web server.
+  python -m SimpleHTTPServer 8000
+  should do it.
+-->
+<!-- TODO: 
+  replace all jQuery functionality with D3
+-->
+<head>
+  <title>Cruncher</title>
+  <!-- load jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <!-- load D3.js -->
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <!-- load our code -->
+  <!-- first the data processing functions -->
+  <script src="statistics.js"></script>
+  <!-- then the website mechanics -->
+  <script src="mechanics.js"></script>
+  <!-- more website mechanics -->
+  <script>
+    $(document).ready(function(){
+      // callback for recomputing data statistics
+      $("form#data").change(function(){
+        data = formToArray($(this));
+        $("#mean").text(mean(data).toString());
+        $("#stdv").text(stdv(data).toString());
+        //updateBar(d3.select(".chart"),data);
+      });
+      
+      // callback for iCDF
+      $("form#icdf").submit(function(){
+        val = formToArray($(this));
+        console.log(icdf(data,val))
+        return false;
+      });
+      
+      // initialize data statistics
+      data = formToArray($("form#data"));
+      $("#mean").text(mean(data).toString());
+      $("#stdv").text(stdv(data).toString());
+      meanSamples = []
+      edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+      createBar(d3.select(".chart"),histogram(meanSamples,edges));
+      
+      // callback for sample1
+      $("button#sample1").click(function(){
+        data = formToArray($("form#data"));
+        meanSamples.push(mean(bootstrap(data,data.length)));
+        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
+      });
+      
+      // callback for sample10
+      $("button#sample10").click(function(){
+        data = formToArray($("form#data"));
+        for (iSample=0; iSample<10; iSample++)
+          meanSamples.push(mean(bootstrap(data,data.length)));
+        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
+      });
+      
+      // callback for sample100
+      $("button#sample100").click(function(){
+        data = formToArray($("form#data"));
+        for (iSample=0; iSample<100; iSample++)
+          meanSamples.push(mean(bootstrap(data,data.length)));
+        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
+      });
+      
+      // callback for loading .csv files
+      $("form#load").submit(function(){
+        filename = $(this).serializeArray();
+        var table = d3.select("table#data");
+        data = loadCsv(filename[0].value,table);
+        return false;
+      });
+    });
+  </script>
+  <!-- some style -->
+	<link rel="stylesheet" href="style.css">
+	<!-- more style -->
+  <style>
+    .chart rect {
+      fill: steelblue;
+    }
+    
+    .chart text {
+      fill: white;
+      font: 10px sans-serif;
+      text-anchor: start;
+    }
+  </style>
+</head>
+<body>
+  This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
+  <a href="http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503">http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503</a><br />
+  <br />
+  We wish to answer statistical questions about one or more sets of data. These questions include:
+  <ul>
+    <li>What is the mean/median/standard deviation/etc. of data set A?</li>
+    <li>What is the probability that the mean(/etc.) of data set A is greater than that of data set B?</li>
+    <li>What are confidence bounds on the difference between two sets of data?</li>
+  </ul>
+  
+  These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
+  
+  <form id="load">
+    <input type="text" name="filename" value="test.csv"/><br />
+    <button type="submit">Load</button>
+  </form>
+  
+  <div id="dataset0">
+    <form class="data">
+      <table class="data" cellspacing="0" cellpadding="0"></table>
+    </form>
+    mean: <span class="mean"></span><br />
+    standard deviation: <span class="stdv"></span><br />
+    <form class="icdf">
+      <input type="text" name="p"/>
+      <button type="submit">iCDF</button>
+    </form>
+    <button type="button" class="sample1">Sample!</button>
+    <button type="button" class="sample10">Sample 10!</button>
+    <button type="button" class="sample100">Sample 100!</button><br />
+    <svg class="chart"></svg>
+  </div>
+</body>
+</html>

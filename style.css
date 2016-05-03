@@ -1,0 +1,21 @@
+#data input {
+  padding-left: 3px;
+  margin:0;
+  display:block;
+  border:none;
+}
+#data tr, td {
+  padding:0;
+  margin:0;
+}
+#data tr {
+  border-bottom: 1px solid #555555;
+}
+#data tr:last-child {
+  border:none;
+}
+#data table {
+  border: 1px solid #555555;
+  border-spacing:0;
+  border-collapse:collapse;
+}
