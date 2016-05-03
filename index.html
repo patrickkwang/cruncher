@@ -22,46 +22,46 @@
   <script>
     $(document).ready(function(){
       // callback for recomputing data statistics
-      $("form#data").change(function(){
+      $("#dataset0 form.data").change(function(){
         data = formToArray($(this));
-        $("#mean").text(mean(data).toString());
-        $("#stdv").text(stdv(data).toString());
+        $(".mean").text(mean(data).toString());
+        $(".stdv").text(stdv(data).toString());
         //updateBar(d3.select(".chart"),data);
       });
       
       // callback for iCDF
-      $("form#icdf").submit(function(){
+      $("#dataset0 form.icdf").submit(function(){
         val = formToArray($(this));
         console.log(icdf(data,val))
         return false;
       });
       
       // initialize data statistics
-      data = formToArray($("form#data"));
-      $("#mean").text(mean(data).toString());
-      $("#stdv").text(stdv(data).toString());
+      data = formToArray($("#dataset0 form.data"));
+      $(".mean").text(mean(data).toString());
+      $(".stdv").text(stdv(data).toString());
       meanSamples = []
       edges = [0.5,1.5,2.5,3.5,4.5,5.5];
       createBar(d3.select(".chart"),histogram(meanSamples,edges));
       
       // callback for sample1
-      $("button#sample1").click(function(){
-        data = formToArray($("form#data"));
+      $("#dataset0 button.sample1").click(function(){
+        data = formToArray($("#dataset0 form.data"));
         meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
       
       // callback for sample10
-      $("button#sample10").click(function(){
-        data = formToArray($("form#data"));
+      $("#dataset0 button.sample10").click(function(){
+        data = formToArray($("#dataset0 form.data"));
         for (iSample=0; iSample<10; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
       
       // callback for sample100
-      $("button#sample100").click(function(){
-        data = formToArray($("form#data"));
+      $("#dataset0 button.sample100").click(function(){
+        data = formToArray($("#dataset0 form.data"));
         for (iSample=0; iSample<100; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
@@ -70,7 +70,7 @@
       // callback for loading .csv files
       $("form#load").submit(function(){
         filename = $(this).serializeArray();
-        var table = d3.select("table#data");
+        var table = d3.select("#dataset0 table.data");
         data = loadCsv(filename[0].value,table);
         return false;
       });
