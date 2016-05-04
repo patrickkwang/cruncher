@@ -68,14 +68,6 @@
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
-      
-      // callback for loading .csv files
-      $("form#load").submit(function(){
-        filename = $(this).serializeArray();
-        var table = d3.select("#dataset0 table.data");
-        loadCsv(filename[0].value,table);
-        return false;
-      });
     });
   </script>
 	<link rel="stylesheet" href="/static/cruncher/style.css">
@@ -93,14 +85,10 @@
   
   These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
   
-  <form id="load">
-    <input type="text" name="filename" value="test.csv"/><br />
-    <button type="submit">Load</button>
-  </form>
-  <div id="file_drop" style="border: 5px dashed #333333; width: 80%; height: 50px;">
-    <br/>
+  <div id="file_drop" style="border: 5px dashed #333333; width: 300px">
     <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
   </div>
+  <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('demo0', d3.select('#dataset0 table.data'))">Load small test data</a>
   <!-- drag/drop file handling -->
   <script>
     var state = document.getElementById('status');
