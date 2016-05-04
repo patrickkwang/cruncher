@@ -10,20 +10,21 @@
 <head>
   <title>Cruncher</title>
   <!-- load jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
   <!-- load D3.js -->
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <!-- load our code -->
   <!-- first the data processing functions -->
-  <script src="statistics.js"></script>
+  <script src="/static/cruncher/statistics.js"></script>
   <!-- then the website mechanics -->
-  <script src="mechanics.js"></script>
+  <script src="/static/cruncher/mechanics.js"></script>
   <!-- more website mechanics -->
   <script>
     $(document).ready(function(){
       // callback for recomputing data statistics
       $("#dataset0 form.data").change(function(){
-        data = formToArray($(this));
+        var data = formToArray($(this));
         $(".mean").text(mean(data).toString());
         $(".stdv").text(stdv(data).toString());
         //updateBar(d3.select(".chart"),data);
@@ -37,7 +38,7 @@
       });
       
       // initialize data statistics
-      data = formToArray($("#dataset0 form.data"));
+      var data = formToArray($("#dataset0 form.data"));
       $(".mean").text(mean(data).toString());
       $(".stdv").text(stdv(data).toString());
       meanSamples = []
@@ -46,14 +47,14 @@
       
       // callback for sample1
       $("#dataset0 button.sample1").click(function(){
-        data = formToArray($("#dataset0 form.data"));
+        var data = formToArray($("#dataset0 form.data"));
         meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
       
       // callback for sample10
       $("#dataset0 button.sample10").click(function(){
-        data = formToArray($("#dataset0 form.data"));
+        var data = formToArray($("#dataset0 form.data"));
         for (iSample=0; iSample<10; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
@@ -61,7 +62,7 @@
       
       // callback for sample100
       $("#dataset0 button.sample100").click(function(){
-        data = formToArray($("#dataset0 form.data"));
+        var data = formToArray($("#dataset0 form.data"));
         for (iSample=0; iSample<100; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
@@ -71,25 +72,12 @@
       $("form#load").submit(function(){
         filename = $(this).serializeArray();
         var table = d3.select("#dataset0 table.data");
-        data = loadCsv(filename[0].value,table);
+        loadCsv(filename[0].value,table);
         return false;
       });
     });
   </script>
-  <!-- some style -->
-	<link rel="stylesheet" href="style.css">
-	<!-- more style -->
-  <style>
-    .chart rect {
-      fill: steelblue;
-    }
-    
-    .chart text {
-      fill: white;
-      font: 10px sans-serif;
-      text-anchor: start;
-    }
-  </style>
+	<link rel="stylesheet" href="/static/cruncher/style.css">
 </head>
 <body>
   This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
@@ -108,6 +96,40 @@
     <input type="text" name="filename" value="test.csv"/><br />
     <button type="submit">Load</button>
   </form>
+  <div id="file_drop" style="border: 5px dashed #333333; width: 80%; height: 50px;">
+    <br/>
+    <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
+  </div>
+  <!-- drag/drop file handling -->
+  <script>
+    var state = document.getElementById('status');
+    var holder = document.getElementById('file_drop');
+
+    if (typeof window.FileReader === 'undefined') {
+      state.innerHTML = 'Your browser does not support local file reading';
+    }
+     
+    holder.ondragover = function () { this.style.borderColor = '#009900'; return false; };
+    holder.ondragend = function () { this.style.borderColor = '#333333'; return false; };
+    holder.ondrop = function (e) {
+      this.style.borderColor = '#333333';
+      e.preventDefault();
+
+      var file = e.dataTransfer.files[0];
+      
+      console.log("File size: " + file.size);
+      if(file.size > 100000000) {
+        var doit = confirm("The file you are attempting to load is over 100Mb. This may cause your browser and computer to freeze. Do you wish to proceed?");
+        if (!doit) {
+          $("#status").text(file.name + " not loaded");
+          return false;
+        }
+      }
+
+      load_file(file, d3.select("#dataset0 table.data"));
+      return false;
+    };
+  </script>
   
   <div id="dataset0">
     <form class="data">

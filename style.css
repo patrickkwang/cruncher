@@ -19,3 +19,13 @@
   border-spacing:0;
   border-collapse:collapse;
 }
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: start;
+}

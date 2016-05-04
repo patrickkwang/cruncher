@@ -108,29 +108,31 @@ function updateBar(obj,data) {
 function loadCsv(filename,table) {
   d3.csv(filename,function(d){
     // place data in table
-    
-    var rows = table.selectAll("tr")
-      .data(d);
-      
-    // replace existing rows
-    var el = rows
-      .select("td").select("input");
-    console.log(el)
-    console.log(d)
-    el.attr("name",function(d) { return "val".concat(d.num); })
-      .property("value",function(d) { return d.num; });
-  
-    // add new rows
-    var bar = rows.enter().append("tr");
-      
-    bar.append("td").append("input")
-      .attr("type","text")
-      .attr("name",function(d) { return "val".concat(d.num); })
-      .attr("value",function(d) { return d.num; });
-    
-    // remove extra rows
-    rows
-      .exit().remove();
+    showData(d, table);
   });
-  return data;
+}
+
+function showData(d, table) {
+  var rows = table.selectAll("tr")
+    .data(d);
+    
+  // replace existing rows
+  var el = rows
+    .select("td").select("input");
+  console.log(el)
+  console.log(d)
+  el.attr("name",function(d) { return "val".concat(d.num); })
+    .property("value",function(d) { return d.num; });
+
+  // add new rows
+  var bar = rows.enter().append("tr");
+    
+  bar.append("td").append("input")
+    .attr("type","text")
+    .attr("name",function(d) { return "val".concat(d.num); })
+    .attr("value",function(d) { return d.num; });
+  
+  // remove extra rows
+  rows
+    .exit().remove();
 }
