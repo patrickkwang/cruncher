@@ -13,15 +13,12 @@ if (!String.prototype.format) {
 
 function tableToArray(obj) {
   var data = [];
-  console.log(obj)
   var foo = obj.selectAll("input");
-  console.log(foo)
   var inputCells = obj.selectAll("input")
     .datum(function(d){
-      console.log(d)
       data.push(Number(d.num));
+      return d;
     });
-  console.log(data)
   return data;
 }
 
