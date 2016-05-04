@@ -11,18 +11,22 @@ if (!String.prototype.format) {
   };
 }
 
-function formToArray(obj) {
-  var formOutput = $(obj).serializeArray();
-  var data = new Array(formOutput.length);
-  for (i=0; i<formOutput.length; i++) {
-    data[i] = Number(formOutput[i].value);
-  }
+function tableToArray(obj) {
+  var data = [];
+  console.log(obj)
+  var foo = obj.selectAll("input");
+  console.log(foo)
+  var inputCells = obj.selectAll("input")
+    .datum(function(d){
+      console.log(d)
+      data.push(Number(d.num));
+    });
+  console.log(data)
   return data;
 }
 
 function createBar(obj,data) {
   // obj should be a D3 object (not e.g. a jQuery object)
-  console.log(data);
     
   var barWidth = 20,
     height = 210;
@@ -62,7 +66,6 @@ function createBar(obj,data) {
 
 function updateBar(obj,data) {
   // obj should be a D3 object (not e.g. a jQuery object)
-  console.log(data);
     
   var barWidth = 20,
     height = 210;
@@ -115,12 +118,11 @@ function loadCsv(filename,table) {
 function showData(d, table) {
   var rows = table.selectAll("tr")
     .data(d);
-    
+      
   // replace existing rows
   var el = rows
     .select("td").select("input");
-  console.log(el)
-  console.log(d)
+    
   el.attr("name",function(d) { return "val".concat(d.num); })
     .property("value",function(d) { return d.num; });
 

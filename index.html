@@ -16,46 +16,45 @@
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <!-- load our code -->
   <!-- first the data processing functions -->
-  <script src="/static/cruncher/statistics.js"></script>
+  <script src="statistics.js"></script>
   <!-- then the website mechanics -->
-  <script src="/static/cruncher/mechanics.js"></script>
-  <script src="/static/cruncher/file_utils.js"></script>
+  <script src="mechanics.js"></script>
+  <script src="file_utils.js"></script>
   <!-- more website mechanics -->
   <script>
     $(document).ready(function(){
       // callback for recomputing data statistics
-      $("#dataset0 form.data").change(function(){
-        var data = formToArray($(this));
-        $(".mean").text(mean(data).toString());
+      $("#dataset0 div.data").change(function(){
+        var data = tableToArray(d3.select(this));        $(".mean").text(mean(data).toString());
         $(".stdv").text(stdv(data).toString());
         //updateBar(d3.select(".chart"),data);
       });
       
       // callback for iCDF
-      $("#dataset0 form.icdf").submit(function(){
-        val = formToArray($(this));
+      $("#dataset0 div.icdf").submit(function(){
+        var val = formToArray($(this));
         console.log(icdf(data,val))
         return false;
       });
       
       // initialize data statistics
-      var data = formToArray($("#dataset0 form.data"));
+      var data = tableToArray(d3.select("#dataset0 div.data table"));
       $(".mean").text(mean(data).toString());
       $(".stdv").text(stdv(data).toString());
-      meanSamples = []
-      edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+      var meanSamples = []
+      var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
       createBar(d3.select(".chart"),histogram(meanSamples,edges));
       
       // callback for sample1
       $("#dataset0 button.sample1").click(function(){
-        var data = formToArray($("#dataset0 form.data"));
+        var data = tableToArray(d3.select("#dataset0 div.data"));
         meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
       
       // callback for sample10
       $("#dataset0 button.sample10").click(function(){
-        var data = formToArray($("#dataset0 form.data"));
+        var data = tableToArray(d3.select("#dataset0 div.data"));
         for (iSample=0; iSample<10; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
@@ -63,14 +62,14 @@
       
       // callback for sample100
       $("#dataset0 button.sample100").click(function(){
-        var data = formToArray($("#dataset0 form.data"));
+        var data = tableToArray(d3.select("#dataset0 div.data table"));
         for (iSample=0; iSample<100; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
     });
   </script>
-	<link rel="stylesheet" href="/static/cruncher/style.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
   This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
@@ -121,15 +120,15 @@
   </script>
   
   <div id="dataset0">
-    <form class="data">
-      <table class="data" cellspacing="0" cellpadding="0"></table>
-    </form>
+    <div class="data">
+      <table cellspacing="0" cellpadding="0"></table>
+    </div>
     mean: <span class="mean"></span><br />
     standard deviation: <span class="stdv"></span><br />
-    <form class="icdf">
+    <div class="icdf" method="post">
       <input type="text" name="p"/>
       <button type="submit">iCDF</button>
-    </form>
+    </div>
     <button type="button" class="sample1">Sample!</button>
     <button type="button" class="sample10">Sample 10!</button>
     <button type="button" class="sample100">Sample 100!</button><br />
