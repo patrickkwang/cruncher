@@ -7,17 +7,7 @@ function load_file(file, table) {
   if (!file) {
     return null;
   }
-  if(file == "demo0") {
-    // short-circuit loading this file, since it may take a long time over github (it takes just a couple seconds to load locally on a standard desktop)
-    $.get("test.csv", null, function(data, status) {
-      if(status == "success") {
-        console.log(data);
-        file_loaded(file, data, true, table);
-      } else {
-        file_loaded(file, null, false, table);
-      }
-    });
-  } else if (typeof file == "string") {
+  if (typeof file == "string") {
     $("#status").text("Loading file '" + file + "'...");
     $.get(file, {}, function(data, textStatus) {
       if(textStatus != "success") {

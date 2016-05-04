@@ -105,13 +105,6 @@ function updateBar(obj,data) {
   });
 }
 
-function loadCsv(filename,table) {
-  d3.csv(filename,function(d){
-    // place data in table
-    showData(d, table);
-  });
-}
-
 function showData(d, table) {
   var rows = table.selectAll("tr")
     .data(d);
