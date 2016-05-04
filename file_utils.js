@@ -11,6 +11,7 @@ function load_file(file, table) {
     // short-circuit loading this file, since it may take a long time over github (it takes just a couple seconds to load locally on a standard desktop)
     $.get("test.csv", null, function(data, status) {
       if(status == "success") {
+        console.log(data);
         file_loaded(file, data, true, table);
       } else {
         file_loaded(file, null, false, table);

@@ -87,7 +87,7 @@
   <div id="file_drop" style="border: 5px dashed #333333; width: 300px">
     <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
   </div>
-  <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('demo0', d3.select('#dataset0 table.data'))">Load small test data</a>
+  <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('demo0', d3.select('#dataset0 div.data table'))">Load small test data</a>
   <!-- drag/drop file handling -->
   <script>
     var state = document.getElementById('status');
@@ -114,7 +114,7 @@
         }
       }
 
-      load_file(file, d3.select("#dataset0 table.data"));
+      load_file(file, d3.select("#dataset0 div.data table"));
       return false;
     };
   </script>
