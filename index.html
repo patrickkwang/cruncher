@@ -20,65 +20,18 @@
   <!-- then the website mechanics -->
   <script src="mechanics.js"></script>
   <script src="file_utils.js"></script>
+  <script src="startup.js"></script>
   <!-- more website mechanics -->
   <script>
     $(document).ready(function(){
-      // callback for recomputing data statistics
-      $("#dataset0 div.data").change(function(){
-        var data = tableToArray(d3.select(this));
-        $(".mean").text(mean(data).toString());
-        $(".stdv").text(stdv(data).toString());
-        //updateBar(d3.select(".chart"),data);
-      });
-
-      // callback for iCDF
-      $("#dataset0 div.icdf").submit(function(){
-        var val = formToArray($(this));
-        console.log(icdf(data,val))
-        return false;
-      });
-
-      // initialize data statistics
-      var data = tableToArray(d3.select("#dataset0 div.data table"));
-      $(".mean").text(mean(data).toString());
-      $(".stdv").text(stdv(data).toString());
-      var meanSamples = []
-      var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
-      createBar(d3.select(".chart"),histogram(meanSamples,edges));
-
-      // callback for sample1
-      $("#dataset0 button.sample1").click(function(){
-        var data = tableToArray(d3.select("#dataset0 div.data"));
-        var keys = d3.keys(data);
-        data = data[keys[0]];
-        meanSamples.push(mean(bootstrap(data,data.length)));
-        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
-      });
-
-      // callback for sample10
-      $("#dataset0 button.sample10").click(function(){
-        var data = tableToArray(d3.select("#dataset0 div.data"));
-        var keys = d3.keys(data);
-        data = data[keys[0]];
-        for (iSample=0; iSample<10; iSample++)
-          meanSamples.push(mean(bootstrap(data,data.length)));
-        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
-      });
-
-      // callback for sample100
-      $("#dataset0 button.sample100").click(function(){
-        var data = tableToArray(d3.select("#dataset0 div.data table"));
-        var keys = d3.keys(data);
-        data = data[keys[0]];
-        for (iSample=0; iSample<100; iSample++)
-          meanSamples.push(mean(bootstrap(data,data.length)));
-        updateBar(d3.select(".chart"),histogram(meanSamples,edges))
-      });
+      startup() // in startup.js
     });
   </script>
+  <!-- stylin' -->
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- introduction -->
   This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
   <a href="http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503">http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503</a><br />
   <br />
@@ -88,46 +41,17 @@
     <li>What is the probability that the mean(/etc.) of data set A is greater than that of data set B?</li>
     <li>What are confidence bounds on the difference between two sets of data?</li>
   </ul>
-
   These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
 
+  <!-- file loading stuff -->
   <div id="file_drop" style="border: 5px dashed #333333; width: 300px">
     <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
   </div>
   <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('test.csv', d3.select('#dataset0 div.data table'))">Load small test data</a>
   <br/>
   <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('twocol.csv', d3.select('#dataset0 div.data table'))">Load two column test data</a>
-  <!-- drag/drop file handling -->
-  <script>
-    var state = document.getElementById('status');
-    var holder = document.getElementById('file_drop');
 
-    if (typeof window.FileReader === 'undefined') {
-      state.innerHTML = 'Your browser does not support local file reading';
-    }
-
-    holder.ondragover = function () { this.style.borderColor = '#009900'; return false; };
-    holder.ondragend = function () { this.style.borderColor = '#333333'; return false; };
-    holder.ondrop = function (e) {
-      this.style.borderColor = '#333333';
-      e.preventDefault();
-
-      var file = e.dataTransfer.files[0];
-
-      console.log("File size: " + file.size);
-      if(file.size > 100000000) {
-        var doit = confirm("The file you are attempting to load is over 100Mb. This may cause your browser and computer to freeze. Do you wish to proceed?");
-        if (!doit) {
-          $("#status").text(file.name + " not loaded");
-          return false;
-        }
-      }
-
-      load_file(file, d3.select("#dataset0 div.data table"));
-      return false;
-    };
-  </script>
-
+  <!-- dataset display and analysis stuff -->
   <div id="dataset0">
     <div class="data">
       <table cellspacing="0" cellpadding="0"></table>

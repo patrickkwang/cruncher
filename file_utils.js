@@ -23,6 +23,7 @@ function load_file(file, table) {
       file_loaded(file.name, event.target.result, true, table);
     }
     reader.onerror = function (event) {
+      // why not display the error here directly?
       file_loaded(file.name, null, false, table);
     }
     reader.readAsText(file);
@@ -39,6 +40,7 @@ function file_loaded(fname, content, success, table) {
     console.log(fname + " loaded");
     showData(d3.csv.parse(content), table);
   } else {
+    // why do this here and not in the callback itself?
     $("#status").text("Error parsing file '" + fname + "'.");
   }
 }

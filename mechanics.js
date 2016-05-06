@@ -122,9 +122,6 @@ function showData(d, table) {
 
   // populate elements
   for (iCol=0; iCol<keys.length; iCol++) {
-    bar.append("td").append("input")
-      .attr("type","text")
-      .attr("name",function(d) { return "val".concat(d[keys[iCol]]); })
-      .attr("value",function(d) { return d[keys[iCol]]; });
+    bar.append("td").html(function(d) { return d[keys[iCol]]; });
   }
 }
