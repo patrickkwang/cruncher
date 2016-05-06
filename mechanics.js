@@ -99,18 +99,23 @@ function styleBars(rect,text,dataMax,barWidth,height) {
       });
 }
 
-function showData(d, table) {
+function showData(d) {
+  // first, make the table
+  var dataset = document.createElement("div");
+  dataset.setAttribute("id","dataset1");
+  document.body.appendChild(dataset);
+  var tab = document.createElement("table");
+  dataset.appendChild(tab);
+  var table = d3.select("#dataset1 table");
+
   var trs = table.selectAll("tr")
     .data(d);
 
   // add rows
   var bar = trs.enter().append("tr");
 
-  // get keys
-  var keys = d3.keys(d[0]);
-
   // populate elements
-  for (iCol=0; iCol<keys.length; iCol++) {
-    bar.append("td").html(function(d) { return d[keys[iCol]]; });
+  for (key in d[0]) {
+    bar.append("td").html(function(d) { return d[key]; });
   }
 }

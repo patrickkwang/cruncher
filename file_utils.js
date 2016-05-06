@@ -3,7 +3,7 @@
  * File loading
  */
 
-function load_file(file, table) {
+function load_file(file) {
   if (!file) {
     return null;
   }
@@ -11,26 +11,26 @@ function load_file(file, table) {
     $("#status").text("Loading file '" + file + "'...");
     $.get(file, {}, function(data, textStatus) {
       if(textStatus != "success") {
-        file_loaded(file, null, false, table);
+        file_loaded(file, null, false);
         return;
       }
-      file_loaded(file, data, true, table);
+      file_loaded(file, data, true);
     });
   } else { // typeof file == File
     $("#status").text("Loading local file '" + file.name + "'...");
     var reader = new FileReader();
     reader.onload = function (event) {
-      file_loaded(file.name, event.target.result, true, table);
+      file_loaded(file.name, event.target.result, true);
     }
     reader.onerror = function (event) {
       // why not display the error here directly?
-      file_loaded(file.name, null, false, table);
+      file_loaded(file.name, null, false);
     }
     reader.readAsText(file);
   }
 }
 
-function file_loaded(fname, content, success, table) {
+function file_loaded(fname, content, success) {
   if (success) {
     var file_type = fname.substring(fname.lastIndexOf('.') + 1).toLowerCase();
     $("#status").text("Reading " + file_type + " file...");
@@ -38,7 +38,7 @@ function file_loaded(fname, content, success, table) {
     var edges;
     $("#status").text(fname + " loaded");
     console.log(fname + " loaded");
-    showData(d3.csv.parse(content), table);
+    showData(d3.csv.parse(content));
   } else {
     // why do this here and not in the callback itself?
     $("#status").text("Error parsing file '" + fname + "'.");
