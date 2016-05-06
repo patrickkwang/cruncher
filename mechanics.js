@@ -12,13 +12,19 @@ if (!String.prototype.format) {
 }
 
 function tableToArray(obj) {
-  var data = [];
-  var inputCells = obj.selectAll("input")
-    .datum(function(d){
-      data.push(Number(d.num));
-      return d;
-    });
-  return data;
+  return ad2da(obj.selectAll("tr").data());
+}
+
+function ad2da(ad) {
+  // array of dictionaries to dictionary of arrays
+  da = {};
+  // initialize dictionary of arrays
+  for (var key in ad[0])
+    da[key] = [];
+  for (var i in ad) // for each element
+    for (var key in ad[i]) // for each key
+      da[key].push(Number(ad[i][key]))
+  return da
 }
 
 function createBar(obj,data) {

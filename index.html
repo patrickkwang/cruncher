@@ -49,6 +49,8 @@
       // callback for sample1
       $("#dataset0 button.sample1").click(function(){
         var data = tableToArray(d3.select("#dataset0 div.data"));
+        var keys = d3.keys(data);
+        data = data[keys[0]];
         meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
       });
@@ -56,6 +58,8 @@
       // callback for sample10
       $("#dataset0 button.sample10").click(function(){
         var data = tableToArray(d3.select("#dataset0 div.data"));
+        var keys = d3.keys(data);
+        data = data[keys[0]];
         for (iSample=0; iSample<10; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
@@ -64,6 +68,8 @@
       // callback for sample100
       $("#dataset0 button.sample100").click(function(){
         var data = tableToArray(d3.select("#dataset0 div.data table"));
+        var keys = d3.keys(data);
+        data = data[keys[0]];
         for (iSample=0; iSample<100; iSample++)
           meanSamples.push(mean(bootstrap(data,data.length)));
         updateBar(d3.select(".chart"),histogram(meanSamples,edges))
