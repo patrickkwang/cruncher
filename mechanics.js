@@ -29,85 +29,74 @@ function ad2da(ad) {
 
 function createBar(obj,data) {
   // obj should be a D3 object (not e.g. a jQuery object)
-
   var barWidth = 20,
     height = 210;
 
-  var y = d3.scale.linear()
-    .domain([0, d3.max(data)])
-    .range([height, 0]);
-
-  var chart = obj
+  // initialize chart size
+  obj
     .attr("width", barWidth * data.length)
     .attr("height", height);
 
-  var bar = chart.selectAll("g")
+  // place bars and position horizontally
+  var bar = obj.selectAll("g")
     .data(data)
     .enter().append("g")
     .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
 
-  bar.append("rect")
-    .attr("y", function(d) { return y(d); })
-    .attr("width", barWidth - 1)
-    .attr("height", function(d) { return height - y(d); });
-
-  yFcn = function(d,obj) {
-    if (height-y(d)-5<obj.getBBox().width)
-      return y(d)-5;
-    else
-      return y(d)+5;
-  }
-
-  bar.append("text")
-    .attr("x", barWidth / 2)
-    .attr("y", function(d) { return yFcn(d, this); })
-    .attr("dy", ".375em")
-    .attr("transform", function(d){ return "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, this)); })
-    .text(function(d) { return d; });
+  // apply remaining style
+  styleBars(bar.append("rect"),bar.append("text"),d3.max(data),barWidth,height)
 }
 
 function updateBar(obj,data) {
   // obj should be a D3 object (not e.g. a jQuery object)
+  var barWidth = obj.attr("width")/data.length,
+    height = obj.attr("height");
 
-  var barWidth = 20,
-    height = 210;
-
-  var y = d3.scale.linear()
-    .domain([0, d3.max(data)])
-    .range([height, 0]);
-
-  var chart = obj;
-
-  var bar = chart.selectAll("g")
+  // bind new data
+  var bar = obj.selectAll("g")
     .data(data);
 
-  bar.select("rect")
-    .attr("y", function(d) { return y(d); })
-    .attr("width", barWidth - 1)
-    .attr("height", function(d) { return height - y(d); });
+  // apply style
+  styleBars(bar.select("rect"),bar.select("text"),d3.max(data),barWidth,height)
+}
 
-  yFcn = function(d,obj) {
+function styleBars(rect,text,dataMax,barWidth,height) {
+
+  // scales data to chart height
+  var y = d3.scale.linear()
+    .domain([0, dataMax])
+    .range([height, 0]);
+
+  // y position of numbers
+  var yFcn = function(d,obj) {
     if (height-y(d)-5<obj.getBBox().width)
       return y(d)-5;
     else
       return y(d)+5;
-  }
+    }
 
-  var num = bar.select("text")
+  // bar and text styling
+  rect
+    .attr("y", function(d) { return y(d); })
+    .attr("width", barWidth - 1)
+    .attr("height", function(d) { return height - y(d); });
+  text
     .attr("x", barWidth / 2)
     .attr("y", function(d) { return yFcn(d, this); })
     .attr("dy", ".375em")
     .attr("transform", function(d){ return "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, this)); })
     .text(function(d) { return d; });
 
-  num.style("text-anchor",function(d) {
-    if (height-y(d)-5<this.getBBox().width)
-      return "end";
-  });
-  num.style("fill",function(d) {
-    if (height-y(d)-5<this.getBBox().width)
-      return "steelblue";
-  });
+  // over-bar numbers (for short bars)
+  text
+    .style("text-anchor",function(d) {
+        if (height-y(d)-5<this.getBBox().width)
+          return "end";
+      })
+    .style("fill",function(d) {
+        if (height-y(d)-5<this.getBBox().width)
+          return "steelblue";
+      });
 }
 
 function showData(d, table) {
