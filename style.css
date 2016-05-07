@@ -34,3 +34,17 @@
   font: 10px sans-serif;
   text-anchor: start;
 }
+
+.dataset {
+  margin: 5px;
+  padding: 5px;
+  border: 2px solid #000000;
+  font-family: courier;
+}
+
+.dataset_title {
+  font-size: 16pt;
+  padding: 5px;
+  margin: 0px;
+  border-bottom: 2px solid #000000;
+}

@@ -99,16 +99,25 @@ function styleBars(rect,text,dataMax,barWidth,height) {
       });
 }
 
-function showData(d) {
+function showData(d, fname) {
+  var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
+
   // first, make the table
   var dataset = document.createElement("div");
-  dataset.setAttribute("id","dataset1");
+  var id = "csvdata_" + name;
+  dataset.setAttribute("id", id);
+  dataset.setAttribute("class", "dataset");
+  var title = document.createElement("div");
+  title.setAttribute("class", "dataset_title");
+  title.textContent = fname;
+  dataset.appendChild(title);
   document.body.appendChild(dataset);
-  var tab = document.createElement("table");
-  dataset.appendChild(tab);
-  var table = d3.select("#dataset1 table");
+  var table = document.createElement("table");
+  dataset.appendChild(table);
+  var d3_dataset = d3.select("#" + id);
+  var d3_table = d3_dataset.select("table");
 
-  var trs = table.selectAll("tr")
+  var trs = d3_table.selectAll("tr")
     .data(d);
 
   // add rows
@@ -118,4 +127,106 @@ function showData(d) {
   for (key in d[0]) {
     bar.append("td").html(function(d) { return d[key]; });
   }
+
+  // create statistics elements
+  var mean_elem = document.createElement("span");
+  var stddev_elem = document.createElement("span");
+
+  var icdf_input = document.createElement("input");
+  var icdf_btn = document.createElement("button");
+  icdf_btn.setAttribute("type", "button");
+  icdf_btn.setAttribute("class", "sample1");
+  icdf_btn.textContent = "iCDF";
+
+  var sample1_btn = document.createElement("button");
+  sample1_btn.setAttribute("type", "button");
+  sample1_btn.setAttribute("class", "sample1");
+  sample1_btn.textContent = "Sample!";
+
+  var sample10_btn = document.createElement("button");
+  sample10_btn.setAttribute("type", "button");
+  sample10_btn.setAttribute("class", "sample10");
+  sample10_btn.textContent = "Sample 10!";
+
+  var sample100_btn = document.createElement("button");
+  sample100_btn.setAttribute("type", "button");
+  sample100_btn.setAttribute("class", "sample100");
+  sample100_btn.textContent = "Sample 100!";
+
+  var svg = document.createElement("svg");
+  svg.setAttribute("class", "chart");
+
+  dataset.appendChild(document.createTextNode("Mean: "));
+  dataset.appendChild(mean_elem);
+  dataset.appendChild(document.createElement("br"));
+  dataset.appendChild(document.createTextNode("Standard Deviation: "));
+  dataset.appendChild(stddev_elem);
+  dataset.appendChild(document.createElement("br"));
+  dataset.appendChild(icdf_input);
+  dataset.appendChild(icdf_btn);
+  dataset.appendChild(document.createElement("br"));
+  dataset.appendChild(sample1_btn);
+  dataset.appendChild(sample10_btn);
+  dataset.appendChild(sample100_btn);
+  dataset.appendChild(document.createElement("br"));
+  dataset.appendChild(svg);
+
+
+  // ------ set up button callbacks ------
+
+  // callback for recomputing data statistics
+  $(table).change(function(){
+    var data = tableToArray(d3_table);
+    $(".mean").text(mean(data).toString());
+    $(".stdv").text(stdv(data).toString());
+    //updateBar(d3.select(".chart"),data);
+  });
+
+  // callback for iCDF
+  $(icdf_btn).click(function(){
+    var data = tableToArray(d3_table);
+    var val = icdf_input.value;
+    console.log(icdf(data,val))
+    return false;
+  });
+
+  // initialize data statistics
+  var data = tableToArray(d3_table);
+  $("#" + id + " .mean").text(mean(data).toString());
+  $("#" + id + " .stdv").text(stdv(data).toString());
+  var meanSamples = []
+  var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+  var d3_chart = d3_dataset.select(".chart");
+
+  createBar(d3_chart, histogram(meanSamples,edges));
+
+  // callback for sample1
+  $(sample1_btn).click(function(){
+    var data = tableToArray(d3_table);
+    var keys = d3.keys(data);
+    data = data[keys[0]];
+    meanSamples.push(mean(bootstrap(data,data.length)));
+    updateBar(d3_chart, histogram(meanSamples,edges))
+  });
+
+  // callback for sample10
+  $(sample10_btn).click(function(){
+    var data = tableToArray(d3_table);
+    var keys = d3.keys(data);
+    data = data[keys[0]];
+    for (iSample=0; iSample<10; iSample++)
+      meanSamples.push(mean(bootstrap(data,data.length)));
+    updateBar(d3_chart, histogram(meanSamples,edges))
+  });
+
+  // callback for sample100
+  $(sample100_btn).click(function(){
+    var data = tableToArray(d3_table);
+    var keys = d3.keys(data);
+    data = data[keys[0]];
+    for (iSample=0; iSample<100; iSample++)
+      meanSamples.push(mean(bootstrap(data,data.length)));
+    updateBar(d3_chart, histogram(meanSamples,edges))
+  });
+
 }
