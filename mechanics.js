@@ -99,7 +99,7 @@ function styleBars(rect,text,dataMax,barWidth,height) {
       });
 }
 
-function showData(d, fname) {
+function createDataset(d, fname) {
   var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
 
   // first, make the table
@@ -129,8 +129,8 @@ function showData(d, fname) {
   }
 
   // create statistics elements
-  var mean_elem = document.createElement("span");
-  var stddev_elem = document.createElement("span");
+  var stats_elem = document.createElement("span");
+  stats_elem.setAttribute("class", "agg_stats");
 
   var icdf_input = document.createElement("input");
   var icdf_btn = document.createElement("button");
@@ -156,18 +156,19 @@ function showData(d, fname) {
   var svg = document.createElement("svg");
   svg.setAttribute("class", "chart");
 
-  dataset.appendChild(document.createTextNode("Mean: "));
-  dataset.appendChild(mean_elem);
+  dataset.appendChild(document.createTextNode("Aggregate stats: "));
   dataset.appendChild(document.createElement("br"));
-  dataset.appendChild(document.createTextNode("Standard Deviation: "));
-  dataset.appendChild(stddev_elem);
+  dataset.appendChild(stats_elem);
+  dataset.appendChild(document.createElement("br"));
   dataset.appendChild(document.createElement("br"));
   dataset.appendChild(icdf_input);
   dataset.appendChild(icdf_btn);
   dataset.appendChild(document.createElement("br"));
+  dataset.appendChild(document.createElement("br"));
   dataset.appendChild(sample1_btn);
   dataset.appendChild(sample10_btn);
   dataset.appendChild(sample100_btn);
+  dataset.appendChild(document.createElement("br"));
   dataset.appendChild(document.createElement("br"));
   dataset.appendChild(svg);
 
@@ -192,13 +193,18 @@ function showData(d, fname) {
 
   // initialize data statistics
   var data = tableToArray(d3_table);
-  $("#" + id + " .mean").text(mean(data).toString());
-  $("#" + id + " .stdv").text(stdv(data).toString());
+  var agg_stats = $("#" + id + " .agg_stats").get(0);
+  console.log(data);
+  for(col in data) {
+    agg_stats.appendChild(document.createTextNode(col + ": " + mean(data.num).toString() + " +/- " + stdv(data.num).toString()));
+    agg_stats.appendChild(document.createElement("br"));
+  }
   var meanSamples = []
   var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
   var d3_chart = d3_dataset.select(".chart");
 
-  createBar(d3_chart, histogram(meanSamples,edges));
+  console.log(d3_chart, meanSamples, edges);
+  createBar(d3_chart, histogram(meanSamples, edges));
 
   // callback for sample1
   $(sample1_btn).click(function(){
@@ -206,7 +212,7 @@ function showData(d, fname) {
     var keys = d3.keys(data);
     data = data[keys[0]];
     meanSamples.push(mean(bootstrap(data,data.length)));
-    updateBar(d3_chart, histogram(meanSamples,edges))
+    updateBar(d3_chart, histogram(meanSamples, edges))
   });
 
   // callback for sample10
@@ -216,7 +222,7 @@ function showData(d, fname) {
     data = data[keys[0]];
     for (iSample=0; iSample<10; iSample++)
       meanSamples.push(mean(bootstrap(data,data.length)));
-    updateBar(d3_chart, histogram(meanSamples,edges))
+    updateBar(d3_chart, histogram(meanSamples, edges))
   });
 
   // callback for sample100
@@ -226,7 +232,7 @@ function showData(d, fname) {
     data = data[keys[0]];
     for (iSample=0; iSample<100; iSample++)
       meanSamples.push(mean(bootstrap(data,data.length)));
-    updateBar(d3_chart, histogram(meanSamples,edges))
+    updateBar(d3_chart, histogram(meanSamples, edges))
   });
 
 }
