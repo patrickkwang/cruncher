@@ -196,7 +196,7 @@ function createDataset(d, fname) {
   var agg_stats = $("#" + id + " .agg_stats").get(0);
   console.log(data);
   for(col in data) {
-    agg_stats.appendChild(document.createTextNode(col + ": " + mean(data.num).toString() + " +/- " + stdv(data.num).toString()));
+    agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(data.num).toString() + " \u03c3" + stdv(data.num).toString()));
     agg_stats.appendChild(document.createElement("br"));
   }
   var meanSamples = []
