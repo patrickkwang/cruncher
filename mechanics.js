@@ -36,7 +36,7 @@ function ad2da(ad) {
   return da
 }
 
-function createBar(obj,data) {
+function createBar(obj, data) {
   // obj should be a D3 object (not e.g. a jQuery object)
   var barWidth = 20,
     height = 210;
@@ -53,7 +53,7 @@ function createBar(obj,data) {
     .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
 
   // apply remaining style
-  styleBars(bar.append("rect"),bar.append("text"),d3.max(data),barWidth,height)
+  styleBars(bar.append("rect"), bar.append("text"), d3.max(data), barWidth, height)
 }
 
 function updateBar(obj,data) {
@@ -69,7 +69,7 @@ function updateBar(obj,data) {
   styleBars(bar.select("rect"),bar.select("text"),d3.max(data),barWidth,height)
 }
 
-function styleBars(rect,text,dataMax,barWidth,height) {
+function styleBars(rect, text, dataMax, barWidth, height) {
 
   // scales data to chart height
   var y = d3.scale.linear()
