@@ -163,7 +163,7 @@ function createDataset(d, fname) {
   sample100_btn.setAttribute("class", "sample100");
   sample100_btn.textContent = "Sample 100!";
 
-  var svg = document.createElement("svg");
+  var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("class", "chart");
 
   dataset.appendChild(document.createTextNode("Aggregate stats: "));
@@ -209,7 +209,7 @@ function createDataset(d, fname) {
     agg_stats.appendChild(document.createElement("br"));
   }
   data = tableToArray(d3_table);
-  var meanSamples = [mean(data)]
+  var meanSamples = []; //[mean(data)]
   var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
   var d3_chart = d3_dataset.select(".chart");
 
