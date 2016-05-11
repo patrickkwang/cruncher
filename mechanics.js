@@ -11,8 +11,17 @@ if (!String.prototype.format) {
   };
 }
 
-function tableToArray(obj) {
+function tableToDict(obj) {
   return ad2da(obj.selectAll("tr").data());
+}
+
+function tableToArray(obj) {
+  var dictOfArrays = tableToDict(obj);
+  var keys = d3.keys(dictOfArrays);
+  if (keys.length==1)
+    return dictOfArrays[keys[0]];
+  else
+    throw "not yet implemented";
 }
 
 function ad2da(ad) {
@@ -69,7 +78,8 @@ function styleBars(rect,text,dataMax,barWidth,height) {
 
   // y position of numbers
   var yFcn = function(d,obj) {
-    if (height-y(d)-5<obj.getBBox().width)
+    console.log(obj)
+    if (height-y(d)-5<0)//obj.getBBox().width)
       return y(d)-5;
     else
       return y(d)+5;
@@ -90,11 +100,11 @@ function styleBars(rect,text,dataMax,barWidth,height) {
   // over-bar numbers (for short bars)
   text
     .style("text-anchor",function(d) {
-        if (height-y(d)-5<this.getBBox().width)
+        if (height-y(d)-5<0)//this.getBBox().width)
           return "end";
       })
     .style("fill",function(d) {
-        if (height-y(d)-5<this.getBBox().width)
+        if (height-y(d)-5<0)//this.getBBox().width)
           return "steelblue";
       });
 }
@@ -192,25 +202,25 @@ function createDataset(d, fname) {
   });
 
   // initialize data statistics
-  var data = tableToArray(d3_table);
+  var data = tableToDict(d3_table);
   var agg_stats = $("#" + id + " .agg_stats").get(0);
-  console.log(data);
   for(col in data) {
-    agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(data.num).toString() + " \u03c3" + stdv(data.num).toString()));
+    agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(data[col]).toString() + " \u03c3" + stdv(data[col]).toString()));
     agg_stats.appendChild(document.createElement("br"));
   }
-  var meanSamples = []
+  data = tableToArray(d3_table);
+  var meanSamples = [mean(data)]
   var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
   var d3_chart = d3_dataset.select(".chart");
 
+  console.log(histogram(meanSamples, edges))
   console.log(d3_chart, meanSamples, edges);
-  createBar(d3_chart, histogram(meanSamples, edges));
 
   // callback for sample1
   $(sample1_btn).click(function(){
     var data = tableToArray(d3_table);
-    var keys = d3.keys(data);
-    data = data[keys[0]];
+    //var keys = d3.keys(data);
+    //data = data[keys[0]];
     meanSamples.push(mean(bootstrap(data,data.length)));
     updateBar(d3_chart, histogram(meanSamples, edges))
   });
@@ -218,8 +228,8 @@ function createDataset(d, fname) {
   // callback for sample10
   $(sample10_btn).click(function(){
     var data = tableToArray(d3_table);
-    var keys = d3.keys(data);
-    data = data[keys[0]];
+    //var keys = d3.keys(data);
+    //data = data[keys[0]];
     for (iSample=0; iSample<10; iSample++)
       meanSamples.push(mean(bootstrap(data,data.length)));
     updateBar(d3_chart, histogram(meanSamples, edges))
@@ -227,12 +237,14 @@ function createDataset(d, fname) {
 
   // callback for sample100
   $(sample100_btn).click(function(){
+    console.log("hello world")
     var data = tableToArray(d3_table);
-    var keys = d3.keys(data);
-    data = data[keys[0]];
+    //var keys = d3.keys(data);
+    //data = data[keys[0]];
     for (iSample=0; iSample<100; iSample++)
       meanSamples.push(mean(bootstrap(data,data.length)));
     updateBar(d3_chart, histogram(meanSamples, edges))
   });
+  createBar(d3_chart, histogram(meanSamples, edges));
 
 }
