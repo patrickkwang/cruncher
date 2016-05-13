@@ -11,8 +11,16 @@ if (!String.prototype.format) {
   };
 }
 
+function datasetToDict(obj) {
+  return tableToDict(obj.select("table"));
+}
+
 function tableToDict(obj) {
   return ad2da(obj.selectAll("tr").data());
+}
+
+function datasetToArray(obj) {
+  return tableToArray(obj.select("table"));
 }
 
 function tableToArray(obj) {
@@ -127,21 +135,23 @@ function createDataset(d, fname) {
     }
   }
 
-  // first, make the table
+  // first, make the dataset block
   var dataset = document.createElement("div");
   dataset.setAttribute("id", id);
   dataset.setAttribute("class", "dataset");
+  document.body.appendChild(dataset);
+  // dataset title
   var title = document.createElement("div");
   title.setAttribute("class", "dataset_title");
   title.textContent = fname;
   dataset.appendChild(title);
-  document.body.appendChild(dataset);
+  // data table
   var table = document.createElement("table");
   dataset.appendChild(table);
-  var d3_dataset = d3.select("#" + id);
-  var d3_table = d3_dataset.select("table");
 
-  var trs = d3_table.selectAll("tr")
+  var d3_dataset = d3.select("#" + id);
+
+  var trs = d3_dataset.select("table").selectAll("tr")
     .data(d);
 
   // add rows
@@ -159,22 +169,18 @@ function createDataset(d, fname) {
   var icdf_input = document.createElement("input");
   var icdf_btn = document.createElement("button");
   icdf_btn.setAttribute("type", "button");
-  icdf_btn.setAttribute("class", "sample1");
   icdf_btn.textContent = "iCDF";
 
   var sample1_btn = document.createElement("button");
   sample1_btn.setAttribute("type", "button");
-  sample1_btn.setAttribute("class", "sample1");
   sample1_btn.textContent = "Sample!";
 
   var sample10_btn = document.createElement("button");
   sample10_btn.setAttribute("type", "button");
-  sample10_btn.setAttribute("class", "sample10");
   sample10_btn.textContent = "Sample 10!";
 
   var sample100_btn = document.createElement("button");
   sample100_btn.setAttribute("type", "button");
-  sample100_btn.setAttribute("class", "sample100");
   sample100_btn.textContent = "Sample 100!";
 
   var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -196,19 +202,8 @@ function createDataset(d, fname) {
   dataset.appendChild(document.createElement("br"));
   dataset.appendChild(svg);
 
-
-  // ------ set up button callbacks ------ //
-
-  // callback for iCDF
-  $(icdf_btn).click(function(){
-    var data = tableToArray(d3_table);
-    var val = icdf_input.value;
-    console.log(icdf(data,val))
-    return false;
-  });
-
   // initialize data statistics
-  var data = tableToDict(d3_table);
+  var data = datasetToDict(d3_dataset);
   var agg_stats = $("#" + id + " .agg_stats").get(0);
   for(col in data) {
     agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(data[col]).toString() + " \u03c3" + stdv(data[col]).toString()));
@@ -221,9 +216,22 @@ function createDataset(d, fname) {
   var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
   createBar(d3_chart, histogram(meanSamples, edges));
 
+
+  // ------ set up button callbacks ------ //
+
+  var data = datasetToArray(d3_dataset);
+
+  // callback for iCDF
+  $(icdf_btn).click(function(){
+    var data = tableToArray(d3_table);
+    var val = icdf_input.value;
+    console.log(icdf(data,val))
+    return false;
+  });
+
   // callback for sample1
   $(sample1_btn).click(function(){
-    var data = tableToArray(d3_table);
+    //var data = tableToArray(d3_table);
     //var keys = d3.keys(data);
     //data = data[keys[0]];
     meanSamples.push(mean(bootstrap(data,data.length)));
@@ -232,7 +240,7 @@ function createDataset(d, fname) {
 
   // callback for sample10
   $(sample10_btn).click(function(){
-    var data = tableToArray(d3_table);
+    //var data = tableToArray(d3_table);
     //var keys = d3.keys(data);
     //data = data[keys[0]];
     for (iSample=0; iSample<10; iSample++)
@@ -242,7 +250,7 @@ function createDataset(d, fname) {
 
   // callback for sample100
   $(sample100_btn).click(function(){
-    var data = tableToArray(d3_table);
+    //var data = tableToArray(d3_table);
     //var keys = d3.keys(data);
     //data = data[keys[0]];
     for (iSample=0; iSample<100; iSample++)
