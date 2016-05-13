@@ -78,8 +78,7 @@ function styleBars(rect, text, dataMax, barWidth, height) {
 
   // y position of numbers
   var yFcn = function(d,obj) {
-    console.log(obj)
-    if (height-y(d)-5<0)//obj.getBBox().width)
+    if (height-y(d)-5<obj.getBBox().width)
       return y(d)-5;
     else
       return y(d)+5;
@@ -100,21 +99,36 @@ function styleBars(rect, text, dataMax, barWidth, height) {
   // over-bar numbers (for short bars)
   text
     .style("text-anchor",function(d) {
-        if (height-y(d)-5<0)//this.getBBox().width)
+        if (height-y(d)-5<this.getBBox().width)
           return "end";
       })
     .style("fill",function(d) {
-        if (height-y(d)-5<0)//this.getBBox().width)
+        if (height-y(d)-5<this.getBBox().width)
           return "steelblue";
       });
 }
 
 function createDataset(d, fname) {
   var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
+  var id = "csvdata_" + name;
+
+  // append number to id if there are duplicates
+  // get existing ids
+  var ids = []
+  var datasets = d3.selectAll(".dataset").each(function() {
+    ids.push($(this).attr("id"))
+  })
+  // increase number until we find a unique one
+  if (ids.indexOf(id)>-1) {
+    var ind = 0;
+    id = id.concat(ind.toString());
+    while (ids.indexOf(id)>-1) {
+      id = id.substring(0,id.length-1).concat((++ind).toString());
+    }
+  }
 
   // first, make the table
   var dataset = document.createElement("div");
-  var id = "csvdata_" + name;
   dataset.setAttribute("id", id);
   dataset.setAttribute("class", "dataset");
   var title = document.createElement("div");
@@ -213,9 +227,6 @@ function createDataset(d, fname) {
   var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
   var d3_chart = d3_dataset.select(".chart");
 
-  console.log(histogram(meanSamples, edges))
-  console.log(d3_chart, meanSamples, edges);
-
   // callback for sample1
   $(sample1_btn).click(function(){
     var data = tableToArray(d3_table);
@@ -237,7 +248,6 @@ function createDataset(d, fname) {
 
   // callback for sample100
   $(sample100_btn).click(function(){
-    console.log("hello world")
     var data = tableToArray(d3_table);
     //var keys = d3.keys(data);
     //data = data[keys[0]];
