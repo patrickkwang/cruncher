@@ -197,15 +197,7 @@ function createDataset(d, fname) {
   dataset.appendChild(svg);
 
 
-  // ------ set up button callbacks ------
-
-  // callback for recomputing data statistics
-  $(table).change(function(){
-    var data = tableToArray(d3_table);
-    $(".mean").text(mean(data).toString());
-    $(".stdv").text(stdv(data).toString());
-    //updateBar(d3.select(".chart"),data);
-  });
+  // ------ set up button callbacks ------ //
 
   // callback for iCDF
   $(icdf_btn).click(function(){
@@ -222,10 +214,12 @@ function createDataset(d, fname) {
     agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(data[col]).toString() + " \u03c3" + stdv(data[col]).toString()));
     agg_stats.appendChild(document.createElement("br"));
   }
-  data = tableToArray(d3_table);
-  var meanSamples = []; //[mean(data)]
-  var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+
+  // initialize mean histogram
   var d3_chart = d3_dataset.select(".chart");
+  var meanSamples = [];
+  var edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+  createBar(d3_chart, histogram(meanSamples, edges));
 
   // callback for sample1
   $(sample1_btn).click(function(){
@@ -255,6 +249,5 @@ function createDataset(d, fname) {
       meanSamples.push(mean(bootstrap(data,data.length)));
     updateBar(d3_chart, histogram(meanSamples, edges))
   });
-  createBar(d3_chart, histogram(meanSamples, edges));
 
 }
