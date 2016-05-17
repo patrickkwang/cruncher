@@ -140,6 +140,13 @@ function createDataset(d, fname) {
   dataset.setAttribute("id", id);
   dataset.setAttribute("class", "dataset");
   document.body.appendChild(dataset);
+  // delete button
+  var del = document.createElement("button");
+  del.setAttribute("class", "dataset_delete");
+  del.setAttribute("type", "button");
+  del.setAttribute("style", "float:right");
+  del.textContent = "x";
+  dataset.appendChild(del);
   // dataset title
   var title = document.createElement("div");
   title.setAttribute("class", "dataset_title");
@@ -220,6 +227,13 @@ function createDataset(d, fname) {
   // ------ set up button callbacks ------ //
 
   var data = datasetToArray(d3_dataset);
+
+  // callback for delete button
+  $(del).click(function(){
+    dataset.parentNode.removeChild(dataset)
+    console.log("deleted.")
+    return false;
+  });
 
   // callback for iCDF
   $(icdf_btn).click(function(){
