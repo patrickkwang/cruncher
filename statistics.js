@@ -1,13 +1,13 @@
 function sum(x) {
   var total = 0;
-  for (i=0; i<x.length; i++) {
+  for (i=0; i < x.length; i++) {
     total += x[i];
   }
   return total;
 }
 
 function mean(x) {
-  return sum(x)/x.length;
+  return sum(x) / x.length;
 }
 
 function stdv(x) {
