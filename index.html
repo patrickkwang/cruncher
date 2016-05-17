@@ -18,6 +18,7 @@
   <!-- first the data processing functions -->
   <script src="statistics.js"></script>
   <!-- then the website mechanics -->
+  <script src="dataset.js"></script>
   <script src="mechanics.js"></script>
   <script src="file_utils.js"></script>
   <script src="startup.js"></script>
@@ -42,6 +43,7 @@
     <li>What are confidence bounds on the difference between two sets of data?</li>
   </ul>
   These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
+  <a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)">https://en.wikipedia.org/wiki/Bootstrapping_(statistics)</a><br />
 
   <!-- file loading stuff -->
   <div id="file_drop" style="border: 5px dashed #333333; width: 300px">
@@ -51,23 +53,7 @@
   <br/>
   <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('twocol.csv')">Load two column test data</a>
 
-  <!-- dataset display and analysis stuff -->
-  <!--
-  <div id="dataset0">
-    <div class="data">
-      <table cellspacing="0" cellpadding="0"></table>
-    </div>
-    mean: <span class="mean"></span><br />
-    standard deviation: <span class="stdv"></span><br />
-    <div class="icdf" method="post">
-      <input type="text" name="p"/>
-      <button type="submit">iCDF</button>
-    </div>
-    <button type="button" class="sample1">Sample!</button>
-    <button type="button" class="sample10">Sample 10!</button>
-    <button type="button" class="sample100">Sample 100!</button><br />
-    <svg class="chart"></svg>
+  <div id="datasets">
   </div>
-  -->
 </body>
 </html>
