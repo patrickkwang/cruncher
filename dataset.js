@@ -29,7 +29,7 @@ function Dataset() {
     var d3_dataset = d3.select("#" + id);
     var trs = d3_dataset.select("table").selectAll("tr").data(csv_data);
     var bar = trs.enter().append("tr");
-    for (key in csv_data) {
+    for (key in csv_data[0]) {
       bar.append("td").html(function(d) { return d[key]; });
     }
 
