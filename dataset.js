@@ -37,6 +37,9 @@ function Dataset() {
     this.data = this.rowmajor2colmajor(csv_data);
     this.columns = d3.keys(this.data);
     this.first_col = this.data[this.columns[0]];
+    this.second_col = this.data[this.columns[1]];
+
+    scatter(csv_data);
 
     // create statistics elements
     var stats_elem = document.createElement("span");
@@ -46,6 +49,10 @@ function Dataset() {
     var icdf_btn = document.createElement("button");
     icdf_btn.setAttribute("type", "button");
     icdf_btn.textContent = "iCDF";
+
+    var fit_btn = document.createElement("button");
+    fit_btn.setAttribute("type", "button");
+    fit_btn.textContent = "Fit!";
 
     var sample1_btn = document.createElement("button");
     sample1_btn.setAttribute("type", "button");
@@ -69,6 +76,9 @@ function Dataset() {
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(icdf_input);
     this.root_node.appendChild(icdf_btn);
+    this.root_node.appendChild(document.createElement("br"));
+    this.root_node.appendChild(document.createElement("br"));
+    this.root_node.appendChild(fit_btn);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(sample1_btn);
@@ -106,7 +116,13 @@ function Dataset() {
       var val = icdf_input.value;
       console.log(icdf(this.first_col, val))
       return false;
-    });
+    }.bind(this));
+
+    // callback for linear fit
+    $(fit_btn).click(function(){
+      console.log(linearFit(this.first_col, this.second_col))
+      return false;
+    }.bind(this));
 
     // callback for sample1
     $(sample1_btn).click(function(){
