@@ -1,6 +1,6 @@
 function scatter(data) {
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
-      width = 960 - margin.left - margin.right,
+      width = 600 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
   /*
@@ -17,7 +17,7 @@ function scatter(data) {
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d[" num1"];}, // data -> value
+  var yValue = function(d) { return d.num1;}, // data -> value
       yScale = d3.scale.linear().range([height, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
@@ -38,10 +38,20 @@ function scatter(data) {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
+  // change string (from CSV) into number format
+  data.forEach(function(d) {
+    d.num0 = +d.num0;
+    d.num1 = +d.num1;
+  });
 
   // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+  var xRange = d3.max(data, xValue) - d3.min(data, xValue),
+      yRange = d3.max(data, yValue) - d3.min(data, yValue);
+  xScale.domain([d3.min(data, xValue)-xRange/10, d3.max(data, xValue)+xRange/10]);
+  yScale.domain([d3.min(data, yValue)-yRange/10, d3.max(data, yValue)+yRange/10]);
+
+  // get axis labels
+  var keys = d3.keys(data[0]);
 
   // x-axis
   svg.append("g")
@@ -53,7 +63,7 @@ function scatter(data) {
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("Calories");
+      .text(keys[0]);
 
   // y-axis
   svg.append("g")
@@ -65,15 +75,7 @@ function scatter(data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Protein (g)");
-
-
-  // change string (from CSV) into number format
-  data.forEach(function(d) {
-    d.num0 = +d.num0;
-    d[" num1"] = +d[" num1"];
-  });
-  console.log(data)
+      .text(keys[1]);
 
   // draw dots
   svg.selectAll(".dot")
@@ -83,5 +85,5 @@ function scatter(data) {
       .attr("r", 3.5)
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));})
+      .style("fill", function(d) { return color(0);}) //cValue(d)
 }
