@@ -10,20 +10,23 @@ function scatter(data) {
    * axis - sets up axis
    */
 
+  // get axis labels
+  var keys = d3.keys(data[0]);
+
   // setup x
-  var xValue = function(d) { return d.num0;}, // data -> value
+  var xValue = function(d) { return d[keys[0]];}, // data -> value
       xScale = d3.scale.linear().range([0, width]), // value -> display
       xMap = function(d) { return xScale(xValue(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d.num1;}, // data -> value
+  var yValue = function(d) { return d[keys[1]];}, // data -> value
       yScale = d3.scale.linear().range([height, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
-  var cValue = function(d) { return d.num0;},
+  var cValue = function(d) { return d[keys[1]];},
       color = d3.scale.category10();
 
   // add the graph canvas to the body of the webpage
@@ -40,18 +43,15 @@ function scatter(data) {
 
   // change string (from CSV) into number format
   data.forEach(function(d) {
-    d.num0 = +d.num0;
-    d.num1 = +d.num1;
+    for (var i=0; i<keys.length; i++)
+      d[keys[i]] = +d[keys[i]];
   });
 
   // don't want dots overlapping axis, so add in buffer to data domain
-  var xRange = d3.max(data, xValue) - d3.min(data, xValue),
-      yRange = d3.max(data, yValue) - d3.min(data, yValue);
-  xScale.domain([d3.min(data, xValue)-xRange/10, d3.max(data, xValue)+xRange/10]);
-  yScale.domain([d3.min(data, yValue)-yRange/10, d3.max(data, yValue)+yRange/10]);
-
-  // get axis labels
-  var keys = d3.keys(data[0]);
+  var xSpan = d3.max(data, xValue) - d3.min(data, xValue),
+      ySpan = d3.max(data, yValue) - d3.min(data, yValue);
+  xScale.domain([d3.min(data, xValue)-xSpan/10, d3.max(data, xValue)+xSpan/10]);
+  yScale.domain([d3.min(data, yValue)-ySpan/10, d3.max(data, yValue)+ySpan/10]);
 
   // x-axis
   svg.append("g")
