@@ -37,9 +37,11 @@ function Dataset() {
     this.data = this.rowmajor2colmajor(csv_data);
     this.columns = d3.keys(this.data);
     this.first_col = this.data[this.columns[0]];
-    this.second_col = this.data[this.columns[1]];
 
-    scatter(csv_data);
+    if (this.columns.length>1) {
+      this.second_col = this.data[this.columns[1]];
+      var scatter = new Scatter(csv_data);
+    }
 
     // create statistics elements
     var stats_elem = document.createElement("span");
@@ -50,9 +52,11 @@ function Dataset() {
     icdf_btn.setAttribute("type", "button");
     icdf_btn.textContent = "iCDF";
 
-    var fit_btn = document.createElement("button");
-    fit_btn.setAttribute("type", "button");
-    fit_btn.textContent = "Fit!";
+    if (this.columns.length>1) {
+      var fit_btn = document.createElement("button");
+      fit_btn.setAttribute("type", "button");
+      fit_btn.textContent = "Fit!";
+    }
 
     var sample1_btn = document.createElement("button");
     sample1_btn.setAttribute("type", "button");
@@ -78,9 +82,11 @@ function Dataset() {
     this.root_node.appendChild(icdf_btn);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(fit_btn);
-    this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(document.createElement("br"));
+    if (this.columns.length>1) {
+      this.root_node.appendChild(fit_btn);
+      this.root_node.appendChild(document.createElement("br"));
+      this.root_node.appendChild(document.createElement("br"));
+    }
     this.root_node.appendChild(sample1_btn);
     this.root_node.appendChild(sample10_btn);
     this.root_node.appendChild(sample100_btn);
@@ -101,7 +107,6 @@ function Dataset() {
     this.edges = [0.5,1.5,2.5,3.5,4.5,5.5];
     this.createBar();
 
-
     // ------ set up button callbacks ------ //
 
     // callback for delete button
@@ -119,10 +124,21 @@ function Dataset() {
     }.bind(this));
 
     // callback for linear fit
-    $(fit_btn).click(function(){
-      console.log(linearFit(this.first_col, this.second_col))
-      return false;
-    }.bind(this));
+    if (this.columns.length>1) {
+      $(fit_btn).click(function(){
+        var fit = linearFit(this.first_col, this.second_col);
+        console.log("y = {1}x + {0}".format(fit[0],fit[1]))
+        var xLims = scatter.xScale.domain();
+        scatter.svg.append("line")
+          .attr("x1",scatter.xScale(xLims[0]))
+          .attr("x2",scatter.xScale(xLims[1]))
+          .attr("y1",scatter.yScale(fit[0]+xLims[0]*fit[1]))
+          .attr("y2",scatter.yScale(fit[0]+xLims[1]*fit[1]))
+          .style("stroke","rgb(100,100,100)")
+          .style("stroke-width",1)
+        return false;
+      }.bind(this));
+    }
 
     // callback for sample1
     $(sample1_btn).click(function(){
