@@ -224,9 +224,14 @@ function Dataset() {
     var nans = 0;
     for (var i = 0; i < csv_data.length; i++) {
       for (var j = 0; j < csv_data[i].length; j++) {
-        this.data[header[j]].push(Number(csv_data[i][j]));
-        if (isNaN(this.data[header[j]][i])) {
+        if(csv_data[i][j].trim().length == 0) {
+          this.data[header[j]].push(NaN);
           nans++;
+        } else {
+          this.data[header[j]].push(Number(csv_data[i][j]));
+          if (isNaN(this.data[header[j]][i])) {
+            nans++;
+          }
         }
       }
     }
