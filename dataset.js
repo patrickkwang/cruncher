@@ -48,6 +48,18 @@ function DataTable() {
 function Dataset() {
   this.init = function(id, fname, csv_data, parent_node) {
 
+    var header;
+    if(isNaN(parseInt(csv_data[0][0]))) {
+      // header is present, maybe
+      header = csv_data.splice(0, 1)[0]; // remove first row
+    } else {
+      header = [];
+      for(var i = 1; i <= csv_data[0].length; i++) {
+        header.push("col"+i);
+      }
+    }
+    this.data = this.toDictionary(header, csv_data);
+
     // first, make the dataset block
     this.root_node = document.createElement("div");
     this.root_node.setAttribute("id", id);
@@ -73,7 +85,6 @@ function Dataset() {
     this.root_node.appendChild(del);
 
     // internal data structure
-    this.data = this.rowmajor2colmajor(csv_data);
     this.columns = Object.keys(this.data);
     this.first_col = this.data[this.columns[0]];
 
@@ -140,11 +151,11 @@ function Dataset() {
     // scatter plot
     if (this.columns.length>1) {
       this.second_col = this.data[this.columns[1]];
-      var scatter = new Scatter(csv_data, d3.select(this.root_node));
+      var scatter = new Scatter(this.data, d3.select(this.root_node));
     }
 
     // initialize chart and mean histogram
-    this.chart = d3_dataset.select(".chart");
+    this.chart = d3.select(svg);
     this.meanSamples = [];
     this.edges = [0.5,1.5,2.5,3.5,4.5,5.5];
     this.createBar();
@@ -203,16 +214,18 @@ function Dataset() {
     this.meanSamples.push(mean(bootstrap(this.first_col, this.first_col.length)));
   }
 
-  this.rowmajor2colmajor = function(ad) {
-    // array of dictionaries to dictionary of arrays
-    da = {};
+  this.toDictionary = function(header, rows) {
+    d = {};
     // initialize dictionary of arrays
-    for (var key in ad[0])
-      da[key] = [];
-    for (var i in ad) // for each element
-      for (var key in ad[i]) // for each key
-        da[key].push(Number(ad[i][key]))
-    return da
+    for (var j = 0; j < header.length; j++) {
+      d[header[j]] = [];
+    }
+    for (var i = 0; i < rows.length; i++) {
+      for (var j = 0; j < rows[i].length; j++) {
+        d[header[j]].push(Number(rows[i][j]));
+      }
+    }
+    return d;
   }
 
   this.createBar = function() {

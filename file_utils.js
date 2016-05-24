@@ -38,7 +38,7 @@ function file_loaded(fname, content, success) {
     var edges;
     $("#status").text(fname + " loaded");
     console.log(fname + " loaded");
-    createDataset(d3.csv.parse(content), fname);
+    createDataset(d3.csv.parseRows(content), fname);
   } else {
     // why do this here and not in the callback itself?
     $("#status").text("Error parsing file '" + fname + "'.");
