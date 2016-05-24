@@ -96,8 +96,8 @@ function Scatter() {
     this.svg.append("line")
       .attr("x1",this.xScale(xLims[0]))
       .attr("x2",this.xScale(xLims[1]))
-      .attr("y1",this.yScale(fit[0]+xLims[0]*fit[1]))
-      .attr("y2",this.yScale(fit[0]+xLims[1]*fit[1]))
+      .attr("y1",this.yScale(predict(xLims[0],fit)))
+      .attr("y2",this.yScale(predict(xLims[1],fit)))
       .style("stroke","rgb(100,100,100)")
       .style("stroke-width",1)
   }

@@ -133,6 +133,8 @@ function Dataset() {
       $(fit_btn).click(function(){
         var fit = linearFit(this.first_col, this.second_col);
         console.log("y = {1}x + {0}".format(fit[0],fit[1]))
+        console.log("rmse: {0}".format(rmse(this.first_col, this.second_col, fit)))
+        console.log("r2: {0}".format(r2(this.first_col, this.second_col, fit)))
         scatter.drawLine(fit)
         return false;
       }.bind(this));

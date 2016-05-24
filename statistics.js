@@ -110,3 +110,43 @@ function mtimes(n,x,l,y,m) {
   }
   return z;
 }
+
+function predict(x,fit) {
+  // fit is a 2-element array of the form [b, m]
+  if (Array.isArray(x)) {
+    var y = new Array(x.length);
+    for (var i=0; i<x.length; i++)
+      y[i] = fit[0] + x[i]*fit[1];
+  }
+  else
+    y = fit[0] + x*fit[1];
+  return y;
+}
+
+function rmse(x,y,fit) {
+  xhat = predict(x,fit);
+  if (Array.isArray(x)) {
+    var sse = 0; // sum of squared errors
+    for (var i=0; i<x.length; i++)
+      sse += Math.pow(xhat[i]-y[i],2)
+    return Math.sqrt(sse/x.length);
+  }
+  else
+    return Math.abs(xhat-x);
+}
+
+function r2(x,y,fit) {
+  yhat = predict(x,fit);
+  ybar = mean(y);
+  if (Array.isArray(x)) {
+    var sse = 0; // sum of squared errors
+    for (var i=0; i<x.length; i++)
+      sse += Math.pow(yhat[i]-y[i],2)
+    var tss = 0; // total sum of squares
+    for (var i=0; i<x.length; i++)
+      tss += Math.pow(ybar-y[i],2)
+    return 1-sse/tss;
+  }
+  else
+    throw "input should be an array";
+}
