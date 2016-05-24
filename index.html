@@ -30,31 +30,46 @@
     });
   </script>
   <!-- stylin' -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- introduction -->
-  This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
-  <a href="http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503">http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503</a><br />
-  <br />
-  We wish to answer statistical questions about one or more sets of data. These questions include:
-  <ul>
-    <li>What is the mean/median/standard deviation/etc. of data set A?</li>
-    <li>What is the probability that the mean(/etc.) of data set A is greater than that of data set B?</li>
-    <li>What are confidence bounds on the difference between two sets of data?</li>
-  </ul>
-  These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
-  <a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)">https://en.wikipedia.org/wiki/Bootstrapping_(statistics)</a><br />
+  <h2>Data Cruncher</h2>
 
-  <!-- file loading stuff -->
-  <div id="file_drop" style="border: 5px dashed #333333; width: 300px">
-    <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
+  <div class="tab_bar" id="tabs">
+    <div class="tab" id="tab1" onclick="load_tab(this, 'sheet1')">New</div>
+    <div class="tab" id="tab0" onclick="load_tab(this, 'sheet0')">About</div>
   </div>
-  <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('test.csv')">Load small test data</a>
-  <br/>
-  <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('twocol.csv')">Load two column test data</a>
 
   <div id="datasets">
+    <div id="sheet0" class="sheet">
+      <!-- introduction -->
+      This tool is intended to address some of the complaints that have been growing lately around the use of statistical measures, especially in measuring the size/significance of effects in psychology and medical studies.<br />
+      <a href="http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503">http://www.nature.com/news/statisticians-issue-warning-over-misuse-of-p-values-1.19503</a><br />
+      <br />
+      We wish to answer statistical questions about one or more sets of data. These questions include:
+      <ul>
+        <li>What is the mean/median/standard deviation/etc. of data set A?</li>
+        <li>What is the probability that the mean(/etc.) of data set A is greater than that of data set B?</li>
+        <li>What are confidence bounds on the difference between two sets of data?</li>
+      </ul>
+      These questions will be given clear and theoretically sound answers using straightforward numerical statistical analyses.<br />
+      <a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)">https://en.wikipedia.org/wiki/Bootstrapping_(statistics)</a><br />
+    </div>
+
+    <div id="sheet1" class="sheet">
+      <!-- file loading stuff -->
+      <div id="file_drop" style="border: 5px dashed #333333; width: 300px; padding: 20px;">
+        <span id="status" style="margin-left: 10px; font-weight: bold">Drop CSV file here to load</span>
+      </div>
+      <br/>
+      <br/>
+      <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('test.csv')">Load small test data</a>
+      <br/>
+      <br/>
+      <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('twocol.csv')">Load two column test data</a>
+    </div>
   </div>
+
 </body>
 </html>

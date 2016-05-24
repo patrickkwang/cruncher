@@ -4,8 +4,17 @@ function Dataset() {
     // first, make the dataset block
     this.root_node = document.createElement("div");
     this.root_node.setAttribute("id", id);
-    this.root_node.setAttribute("class", "dataset");
+    this.root_node.setAttribute("class", "sheet");
     parent_node.appendChild(this.root_node);
+
+    this.tab = document.createElement("div");
+    this.tab.setAttribute("class", "tab");
+    this.tab.textContent = fname;
+    this.tab.addEventListener("click", function() {
+      load_tab(this, id);
+    }, false);
+
+    document.getElementById("tabs").appendChild(this.tab);
 
     // delete button
     var del = document.createElement("button");
@@ -14,12 +23,6 @@ function Dataset() {
     del.setAttribute("style", "float:right");
     del.textContent = "x";
     this.root_node.appendChild(del);
-
-    // dataset title
-    var title = document.createElement("div");
-    title.setAttribute("class", "dataset_title");
-    title.textContent = fname;
-    this.root_node.appendChild(title);
 
     // data table
     var table = document.createElement("table");
@@ -111,11 +114,12 @@ function Dataset() {
     // ------ set up button callbacks ------ //
 
     // callback for delete button
-    $(del).click(function(){
-      this.parent_node.removeChild(this.root_node)
+    del.addEventListener("click", function(){
+      parent_node.removeChild(this.root_node)
+      document.getElementById("tabs").removeChild(this.tab); // and get rid of tab
       console.log("deleted.")
       return false;
-    });
+    }.bind(this), false);
 
     // callback for iCDF
     $(icdf_btn).click(function(){

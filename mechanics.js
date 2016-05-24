@@ -11,6 +11,18 @@ if (!String.prototype.format) {
   };
 }
 
+var current_sheet;
+var current_tab;
+function load_tab(tab, sheet_id) {
+  var sheet = document.getElementById(sheet_id);
+  current_sheet.style.display = "none";
+  current_tab.style.borderBottom = "1px solid #333333";
+  tab.style.borderBottom = "1px solid #FFFFFF";
+  sheet.style.display = "block";
+  current_tab = tab;
+  current_sheet = sheet;
+}
+
 function createDataset(d, fname) {
   /*
    * Name dataset

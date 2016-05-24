@@ -27,4 +27,9 @@ function startup() {
     load_file(file);
     return false;
   };
+  
+  current_sheet = document.getElementById("sheet1");
+  current_sheet.style.display = "block";
+  current_tab = document.getElementById("tab1");
+  current_tab.style.borderBottom = "1px solid #FFFFFF";
 }

@@ -1,3 +1,38 @@
+body {
+  width: 1000px;
+  margin: auto;
+  font-family: "Open Sans";
+  padding: 10px;
+}
+
+div.tab_bar {
+  margin-top: 10px;
+  position: relative;
+  top: 1px;
+}
+
+div.tab {
+  cursor: pointer;
+  display: inline-block;
+  border-top: 1px solid #333333;
+  border-right: 1px solid #333333;
+  border-top-right-radius: 5px;
+  border-left: 1px solid #333333;
+  border-top-left-radius: 5px;
+  border-bottom: 1px solid #333333;
+  padding: 10px;
+  margin: 0px;
+}
+
+div.sheet {
+  padding: 20px;
+  display: none;
+  border-right: 1px solid #333333;
+  border-left: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-top: 1px solid #333333;
+}
+
 .data input {
   padding-left: 3px;
   margin:0;
@@ -33,18 +68,4 @@
   fill: white;
   font: 10px sans-serif;
   text-anchor: start;
-}
-
-.dataset {
-  margin: 5px;
-  padding: 5px;
-  border: 2px solid #000000;
-  font-family: courier;
-}
-
-.dataset_title {
-  font-size: 16pt;
-  padding: 5px;
-  margin: 0px;
-  border-bottom: 2px solid #000000;
 }
