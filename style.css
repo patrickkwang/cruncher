@@ -69,3 +69,32 @@ div.sheet {
   font: 10px sans-serif;
   text-anchor: start;
 }
+
+.data-table {
+  border: 1px solid #BBBBBB;
+}
+
+div.table-container {
+  width: 800px;
+  height: 400px;
+  overflow: scroll;
+  border: 2px solid #000000;
+}
+
+.data-table-header-cell {
+  border: 1px solid #BBBBBB;
+  background-color: #DDDDDD;
+  font-weight: bold;
+  padding: 5px;
+  margin: 0px;
+  width: 50px;
+  overflow: hidden;
+}
+
+.data-table-cell {
+  border: 1px solid #BBBBBB;
+  padding: 5px;
+  margin: 0px;
+  width: 50px;
+  overflow: hidden;
+}

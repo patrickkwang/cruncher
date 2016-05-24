@@ -1,3 +1,50 @@
+function DataTable() {
+  this.init = function(parent_node, data) {
+
+    // container to control scrolling, sizing, and such
+    var table_div = document.createElement("div");
+    table_div.setAttribute("class", "table-container");
+    parent_node.appendChild(table_div);
+
+    // data table
+    var table = document.createElement("table");
+    table.setAttribute("class", "data-table");
+    table.setAttribute("cellpadding", "0");
+    table.setAttribute("cellspacing", "0");
+    table_div.appendChild(table);
+
+    var thead = document.createElement("thead");
+    table.appendChild(thead);
+    var hrow = document.createElement("tr");
+    thead.appendChild(hrow);
+    var keys = Object.keys(data);
+
+    for(var i = 0; i < keys.length; i++) {
+      var th = document.createElement("th");
+      th.textContent = keys[i];
+      th.setAttribute("class", "data-table-header-cell");
+      hrow.appendChild(th);
+    }
+    
+    var tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+
+    for(var j = 0; j < data[keys[0]].length; j++) {
+      var tr = document.createElement("tr");
+      tbody.appendChild(tr);
+      for(var i = 0; i < keys.length; i++) {
+        var td = document.createElement("td");
+        tr.appendChild(td);
+        td.setAttribute("class", "data-table-cell");
+        td.textContent = data[keys[i]][j];
+      }
+    }
+  }
+
+  this.init.apply(this, arguments);
+}
+
+
 function Dataset() {
   this.init = function(id, fname, csv_data, parent_node) {
 
@@ -14,6 +61,7 @@ function Dataset() {
       load_tab(this, id);
     }, false);
 
+    document.getElementById("tabs").appendChild(document.createTextNode(" ")); // put a little space between tabs
     document.getElementById("tabs").appendChild(this.tab);
 
     // delete button
@@ -24,22 +72,12 @@ function Dataset() {
     del.textContent = "x";
     this.root_node.appendChild(del);
 
-    // data table
-    var table = document.createElement("table");
-    this.root_node.appendChild(table);
-
-    // intialize D3-linked table
-    var d3_dataset = d3.select("#" + id);
-    var trs = d3_dataset.select("table").selectAll("tr").data(csv_data);
-    var bar = trs.enter().append("tr");
-    for (key in csv_data[0]) {
-      bar.append("td").html(function(d) { return d[key]; });
-    }
-
     // internal data structure
     this.data = this.rowmajor2colmajor(csv_data);
-    this.columns = d3.keys(this.data);
+    this.columns = Object.keys(this.data);
     this.first_col = this.data[this.columns[0]];
+
+    this.data_table = new DataTable(this.root_node, this.data);
 
     // create statistics elements
     var stats_elem = document.createElement("span");
