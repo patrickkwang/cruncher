@@ -48,17 +48,7 @@ function DataTable() {
 function Dataset() {
   this.init = function(id, fname, csv_data, parent_node) {
 
-    var header;
-    if(isNaN(parseInt(csv_data[0][0]))) {
-      // header is present, maybe
-      header = csv_data.splice(0, 1)[0]; // remove first row
-    } else {
-      header = [];
-      for(var i = 1; i <= csv_data[0].length; i++) {
-        header.push("col"+i);
-      }
-    }
-    this.data = this.toDictionary(header, csv_data);
+    this.load_data(csv_data);
 
     // first, make the dataset block
     this.root_node = document.createElement("div");
@@ -214,18 +204,35 @@ function Dataset() {
     this.meanSamples.push(mean(bootstrap(this.first_col, this.first_col.length)));
   }
 
-  this.toDictionary = function(header, rows) {
-    d = {};
-    // initialize dictionary of arrays
-    for (var j = 0; j < header.length; j++) {
-      d[header[j]] = [];
-    }
-    for (var i = 0; i < rows.length; i++) {
-      for (var j = 0; j < rows[i].length; j++) {
-        d[header[j]].push(Number(rows[i][j]));
+  this.load_data = function(csv_data) {
+    var header;
+    if(isNaN(parseInt(csv_data[0][0]))) {
+      // header is present, maybe
+      header = csv_data.splice(0, 1)[0]; // remove first row
+    } else {
+      header = [];
+      for(var i = 1; i <= csv_data[0].length; i++) {
+        header.push("col"+i);
       }
     }
-    return d;
+
+    this.data = {};
+    // initialize dictionary of arrays
+    for (var j = 0; j < header.length; j++) {
+      this.data[header[j]] = [];
+    }
+    var nans = 0;
+    for (var i = 0; i < csv_data.length; i++) {
+      for (var j = 0; j < csv_data[i].length; j++) {
+        this.data[header[j]].push(Number(csv_data[i][j]));
+        if (isNaN(this.data[header[j]][i])) {
+          nans++;
+        }
+      }
+    }
+    if(nans > 0) {
+      console.error(nans + " values were not numeric, now they are NaN.");
+    }
   }
 
   this.createBar = function() {
