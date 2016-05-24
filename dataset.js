@@ -48,6 +48,8 @@ function DataTable() {
 function Dataset() {
   this.init = function(id, fname, csv_data, parent_node) {
 
+    this.load_data(csv_data);
+
     // first, make the dataset block
     this.root_node = document.createElement("div");
     this.root_node.setAttribute("id", id);
@@ -73,7 +75,6 @@ function Dataset() {
     this.root_node.appendChild(del);
 
     // internal data structure
-    this.data = this.rowmajor2colmajor(csv_data);
     this.columns = Object.keys(this.data);
     this.first_col = this.data[this.columns[0]];
 
@@ -144,7 +145,7 @@ function Dataset() {
     }
 
     // initialize chart and mean histogram
-    this.chart = d3_dataset.select(".chart");
+    this.chart = d3.select(svg);
     this.meanSamples = [];
     this.edges = [0.5,1.5,2.5,3.5,4.5,5.5];
     this.createBar();
@@ -203,16 +204,35 @@ function Dataset() {
     this.meanSamples.push(mean(bootstrap(this.first_col, this.first_col.length)));
   }
 
-  this.rowmajor2colmajor = function(ad) {
-    // array of dictionaries to dictionary of arrays
-    da = {};
+  this.load_data = function(csv_data) {
+    var header;
+    if(isNaN(parseInt(csv_data[0][0]))) {
+      // header is present, maybe
+      header = csv_data.splice(0, 1)[0]; // remove first row
+    } else {
+      header = [];
+      for(var i = 1; i <= csv_data[0].length; i++) {
+        header.push("col"+i);
+      }
+    }
+
+    this.data = {};
     // initialize dictionary of arrays
-    for (var key in ad[0])
-      da[key] = [];
-    for (var i in ad) // for each element
-      for (var key in ad[i]) // for each key
-        da[key].push(Number(ad[i][key]))
-    return da
+    for (var j = 0; j < header.length; j++) {
+      this.data[header[j]] = [];
+    }
+    var nans = 0;
+    for (var i = 0; i < csv_data.length; i++) {
+      for (var j = 0; j < csv_data[i].length; j++) {
+        this.data[header[j]].push(Number(csv_data[i][j]));
+        if (isNaN(this.data[header[j]][i])) {
+          nans++;
+        }
+      }
+    }
+    if(nans > 0) {
+      console.error(nans + " values were not numeric, now they are NaN.");
+    }
   }
 
   this.createBar = function() {
