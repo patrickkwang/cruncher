@@ -48,7 +48,7 @@ function Scatter() {
 
     // don't want dots overlapping axis, so add in buffer to data domain
     var xSpan = getMaxOfArray(first_col) - getMinOfArray(first_col),
-        ySpan = getMaxOfArray(second_col) - getMinOfArray(second_col),;
+        ySpan = getMaxOfArray(second_col) - getMinOfArray(second_col);
     this.xScale.domain([getMinOfArray(first_col)-xSpan/10, getMaxOfArray(first_col)+xSpan/10]);
     this.yScale.domain([getMinOfArray(second_col)-ySpan/10,getMaxOfArray(second_col)+ySpan/10]);
 
