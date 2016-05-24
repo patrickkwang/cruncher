@@ -25,7 +25,7 @@ function DataTable() {
       th.setAttribute("class", "data-table-header-cell");
       hrow.appendChild(th);
     }
-    
+
     var tbody = document.createElement("tbody");
     table.appendChild(tbody);
 
@@ -140,7 +140,7 @@ function Dataset() {
     // scatter plot
     if (this.columns.length>1) {
       this.second_col = this.data[this.columns[1]];
-      var scatter = new Scatter(csv_data, d3.select(this.root_node));
+      var scatter = new Scatter(this.data, d3.select(this.root_node));
     }
 
     // initialize chart and mean histogram

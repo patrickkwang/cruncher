@@ -11,8 +11,12 @@ function Scatter() {
      * axis - sets up axis
      */
 
+    console.log(data)
+
     // get axis labels
-    var keys = d3.keys(data[0]);
+    var keys = Object.keys(data);
+    var first_col = data[keys[0]];
+    var second_col = data[keys[1]];
 
     // setup x
     var that = this;
@@ -28,8 +32,7 @@ function Scatter() {
     this.yAxis = d3.svg.axis().scale(this.yScale).orient("left");
 
     // setup fill color
-    var cValue = function(d) { return d[keys[1]];},
-        color = d3.scale.category10();
+    var color = d3.scale.category10();
 
     // add the graph canvas to the body of the webpage
     this.svg = parentNode.append("svg")
@@ -43,17 +46,11 @@ function Scatter() {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
-    // change string (from CSV) into number format
-    data.forEach(function(d) {
-      for (var i=0; i<keys.length; i++)
-        d[keys[i]] = +d[keys[i]];
-    });
-
     // don't want dots overlapping axis, so add in buffer to data domain
-    var xSpan = d3.max(data, this.xValue) - d3.min(data, this.xValue),
-        ySpan = d3.max(data, this.yValue) - d3.min(data, this.yValue);
-    this.xScale.domain([d3.min(data, this.xValue)-xSpan/10, d3.max(data, this.xValue)+xSpan/10]);
-    this.yScale.domain([d3.min(data, this.yValue)-ySpan/10, d3.max(data, this.yValue)+ySpan/10]);
+    var xSpan = getMaxOfArray(first_col) - getMinOfArray(first_col),
+        ySpan = getMaxOfArray(second_col) - getMinOfArray(second_col),;
+    this.xScale.domain([getMinOfArray(first_col)-xSpan/10, getMaxOfArray(first_col)+xSpan/10]);
+    this.yScale.domain([getMinOfArray(second_col)-ySpan/10,getMaxOfArray(second_col)+ySpan/10]);
 
     // x-axis
     this.svg.append("g")

@@ -150,3 +150,7 @@ function r2(x,y,fit) {
   else
     throw "input should be an array";
 }
+
+function getMaxOfArray(x) {
+  return Math.max.apply(null, x);
+}
