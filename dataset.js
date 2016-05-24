@@ -38,11 +38,6 @@ function Dataset() {
     this.columns = d3.keys(this.data);
     this.first_col = this.data[this.columns[0]];
 
-    if (this.columns.length>1) {
-      this.second_col = this.data[this.columns[1]];
-      var scatter = new Scatter(csv_data);
-    }
-
     // create statistics elements
     var stats_elem = document.createElement("span");
     stats_elem.setAttribute("class", "agg_stats");
@@ -101,6 +96,12 @@ function Dataset() {
       agg_stats.appendChild(document.createElement("br"));
     }
 
+    // scatter plot
+    if (this.columns.length>1) {
+      this.second_col = this.data[this.columns[1]];
+      var scatter = new Scatter(csv_data, d3.select(this.root_node));
+    }
+
     // initialize chart and mean histogram
     this.chart = d3_dataset.select(".chart");
     this.meanSamples = [];
@@ -128,14 +129,7 @@ function Dataset() {
       $(fit_btn).click(function(){
         var fit = linearFit(this.first_col, this.second_col);
         console.log("y = {1}x + {0}".format(fit[0],fit[1]))
-        var xLims = scatter.xScale.domain();
-        scatter.svg.append("line")
-          .attr("x1",scatter.xScale(xLims[0]))
-          .attr("x2",scatter.xScale(xLims[1]))
-          .attr("y1",scatter.yScale(fit[0]+xLims[0]*fit[1]))
-          .attr("y2",scatter.yScale(fit[0]+xLims[1]*fit[1]))
-          .style("stroke","rgb(100,100,100)")
-          .style("stroke-width",1)
+        scatter.drawLine(fit)
         return false;
       }.bind(this));
     }

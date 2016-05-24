@@ -1,5 +1,5 @@
 function Scatter() {
-  this.init = function(data) {
+  this.init = function(data, parentNode) {
     this.margin = {top: 20, right: 20, bottom: 30, left: 40},
     this.width = 600 - this.margin.left - this.margin.right,
     this.height = 500 - this.margin.top - this.margin.bottom;
@@ -32,7 +32,7 @@ function Scatter() {
         color = d3.scale.category10();
 
     // add the graph canvas to the body of the webpage
-    this.svg = d3.select("body").append("svg")
+    this.svg = parentNode.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
@@ -88,6 +88,18 @@ function Scatter() {
         .attr("cx", this.xMap)
         .attr("cy", this.yMap)
         .style("fill", function(d) { return color(0);}) //cValue(d)
+  }
+
+  this.drawLine = function(fit) {
+    // fit is a 2-element array [b, m]
+    var xLims = this.xScale.domain();
+    this.svg.append("line")
+      .attr("x1",this.xScale(xLims[0]))
+      .attr("x2",this.xScale(xLims[1]))
+      .attr("y1",this.yScale(fit[0]+xLims[0]*fit[1]))
+      .attr("y2",this.yScale(fit[0]+xLims[1]*fit[1]))
+      .style("stroke","rgb(100,100,100)")
+      .style("stroke-width",1)
   }
 
   this.init.apply(this, arguments);
