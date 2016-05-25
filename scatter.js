@@ -11,8 +11,6 @@ function Scatter() {
      * axis - sets up axis
      */
 
-    console.log(data)
-
     // get axis labels
     var keys = Object.keys(data);
     var first_col = data[keys[0]];
@@ -22,13 +20,11 @@ function Scatter() {
     var that = this;
     this.xValue = function(d) { return d[keys[0]];}; // data -> value
     this.xScale = d3.scale.linear().range([0, this.width]); // value -> display
-    this.xMap = function(d) { return that.xScale(that.xValue(d));}; // data -> display
     this.xAxis = d3.svg.axis().scale(this.xScale).orient("bottom");
 
     // setup y
     this.yValue = function(d) { return d[keys[1]];}; // data -> value
     this.yScale = d3.scale.linear().range([this.height, 0]); // value -> display
-    this.yMap = function(d) { return that.yScale(that.yValue(d));}; // data -> display
     this.yAxis = d3.svg.axis().scale(this.yScale).orient("left");
 
     // setup fill color

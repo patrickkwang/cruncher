@@ -30,7 +30,7 @@ function createDataset(d, fname) {
    */
 
   var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
-  var id = "csvdata_" + name;
+  var id = name;
 
   // append number to id if there are duplicates
   // get existing ids
@@ -49,4 +49,23 @@ function createDataset(d, fname) {
 
   // Dataset(id, data, parent_node)
   var ds = new Dataset(id, fname, d, document.getElementById("datasets"));
+}
+
+function analyze() {
+  var analysisType = document.getElementById("analysisType").value;
+  var firstSeries = $("select.dataSeries:first-child");
+  var secondSeries = $("select.dataSeries:first-child");
+  switch (analysisType) {
+    case "means":
+      for (var iSample=0; iSample<100; iSample++)
+        ds.sampleMean();
+      break;
+    case "standard deviations":
+      console.log("standard deviation")
+      break;
+    default:
+      console.log("unknown analysis type")
+  }
+  console.log(firstSeries[0].value)
+  console.log(secondSeries[0].value)
 }

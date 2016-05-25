@@ -71,6 +71,19 @@
       <br/>
       <br/>
       <a style='color:blue; text-decoration:underline; cursor:pointer' onclick="load_file('testoverflow.csv')">Load overflowing test data</a>
+      <br />
+      <br />
+      Compare <select id="analysisType">
+        <option>means</option>
+        <option>standard deviations</option>
+      </select>
+      <div style="display:inline">
+        of <select id="dataSeries0" class="dataSeries">
+        </select>
+        and <select id="dataSeries1" class="dataSeries">
+        </select>
+      </div>
+      ... <button onclick="analyze()">Go!</button>
     </div>
   </div>
 

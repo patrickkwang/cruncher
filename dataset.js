@@ -48,6 +48,7 @@ function DataTable() {
 function Dataset() {
   this.init = function(id, fname, csv_data, parent_node) {
 
+    this.name = id;
     this.load_data(csv_data);
 
     // first, make the dataset block
@@ -76,6 +77,15 @@ function Dataset() {
 
     // internal data structure
     this.columns = Object.keys(this.data);
+    for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
+      seriesSelectors = document.getElementsByClassName("dataSeries");
+      for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
+        var seriesOption = document.createElement("option");
+        seriesOption.textContent = this.name+'_'+this.columns[iSeries];
+        seriesOption.setAttribute("id",this.name+'_'+this.columns[iSeries]);
+        seriesSelectors[iSelector].appendChild(seriesOption)
+      }
+    }
     this.first_col = this.data[this.columns[0]];
 
     this.data_table = new DataTable(this.root_node, this.data);
@@ -157,6 +167,12 @@ function Dataset() {
       parent_node.removeChild(this.root_node)
       document.getElementById("tabs").removeChild(this.tab); // and get rid of tab
       console.log("deleted.")
+
+      current_sheet = document.getElementById("sheet1");
+      current_sheet.style.display = "block";
+      current_tab = document.getElementById("tab1");
+      current_tab.style.borderBottom = "1px solid #FFFFFF";
+
       return false;
     }.bind(this), false);
 
