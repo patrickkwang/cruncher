@@ -77,14 +77,22 @@ function Scatter() {
         .text(keys[1]);
 
     // draw dots
-    this.svg.selectAll(".dot")
+    for (var i=0; i<first_col.length; i++) {
+      this.svg.append("circle")
+          .attr("class", "dot")
+          .attr("r", 3.5)
+          .attr("cx", this.xScale(first_col[i]))
+          .attr("cy", this.yScale(second_col[i]))
+          .style("fill", function(d) { return color(0);}) //cValue(d)
+    }
+    /*this.svg.selectAll(".dot")
         .data(data)
       .enter().append("circle")
         .attr("class", "dot")
         .attr("r", 3.5)
         .attr("cx", this.xMap)
         .attr("cy", this.yMap)
-        .style("fill", function(d) { return color(0);}) //cValue(d)
+        .style("fill", function(d) { return color(0);}) //cValue(d)*/
   }
 
   this.drawLine = function(fit) {

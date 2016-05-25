@@ -151,6 +151,10 @@ function r2(x,y,fit) {
     throw "input should be an array";
 }
 
+function getMinOfArray(x) {
+  return Math.min.apply(null, x);
+}
+
 function getMaxOfArray(x) {
   return Math.max.apply(null, x);
 }
