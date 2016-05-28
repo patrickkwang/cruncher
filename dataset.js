@@ -75,19 +75,29 @@ function Dataset() {
     del.textContent = "x";
     this.root_node.appendChild(del);
 
-    // internal data structure
+    // selectors for multi-dataset analysis
+    // ONCLICK, CALL A FUNCTION THAT CREATES THE Go! FUNCTION WITH THE CORRECT ARGUMENTS
     this.columns = Object.keys(this.data);
     for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
       seriesSelectors = document.getElementsByClassName("dataSeries");
       for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
-        var seriesOption = document.createElement("option");
+        var goButton = document.getElementById("analyzeButton");
+        var seriesOption = document.createElement("button");
         seriesOption.textContent = this.name+'_'+this.columns[iSeries];
         seriesOption.setAttribute("id",this.name+'_'+this.columns[iSeries]);
+        seriesOption.onclick = function() {
+          this.parentNode.getData = function() {
+            console.log("you've chosen "+this.textContent)
+          }.bind(this);
+          console.log($(this.parentNode))
+        };
         seriesSelectors[iSelector].appendChild(seriesOption)
+        seriesSelectors[iSelector].appendChild(document.createElement("br"))
       }
     }
-    this.first_col = this.data[this.columns[0]];
 
+    // internal data structure
+    this.first_col = this.data[this.columns[0]];
     this.data_table = new DataTable(this.root_node, this.data);
 
     // create statistics elements
