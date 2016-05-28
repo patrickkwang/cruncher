@@ -81,31 +81,25 @@ function Dataset() {
     this.data_table = new DataTable(this.root_node, this.data);
 
     // selectors for multi-dataset analysis
+    // ONCLICK, CALL A FUNCTION THAT CREATES THE Go! FUNCTION WITH THE CORRECT ARGUMENTS
     var seriesSelectors = document.getElementsByClassName("dataSeries");
-    var goButton = document.getElementById("analyzeButton");
-    // first set
-    for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
-      var seriesOption = document.createElement("button");
-      seriesOption.textContent = this.name+'_'+this.columns[0];
-      seriesOption.setAttribute("id",this.name+'_'+this.columns[0]);
-      seriesOption.onclick = function() {
-        goButton.onclick.firstSeries = this.data[this.columns[0]];
-      }.bind(this);
-      seriesSelectors[iSelector].appendChild(seriesOption)
-      seriesSelectors[iSelector].appendChild(document.createElement("br"))
-    }
-    if (this.columns.length>1) {
-      // second set
-      for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
-        var seriesOption = document.createElement("button");
-        seriesOption.textContent = this.name+'_'+this.columns[1];
-        seriesOption.setAttribute("id",this.name+'_'+this.columns[1]);
-        seriesOption.onclick = function() {
-          goButton.onclick.secondSeries = this.data[this.columns[1]];
-        }.bind(this);
-        seriesSelectors[iSelector].appendChild(seriesOption)
-        seriesSelectors[iSelector].appendChild(document.createElement("br"))
-      }
+    for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
+      (function(obj,iSeries){
+        for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
+          (function(obj,iSelector){
+            var seriesSelectors = document.getElementsByClassName("dataSeries");
+            var goButton = document.getElementById("analyzeButton");
+            var seriesOption = document.createElement("button");
+            seriesOption.textContent = obj.name+'_'+obj.columns[iSeries];
+            seriesOption.setAttribute("id",obj.name+'_'+obj.columns[iSeries]);
+            seriesOption.onclick = function() {
+              goButton.onclick.dataSeries[iSelector] = obj.data[obj.columns[iSeries]];
+            }.bind(obj);
+            seriesSelectors[iSelector].appendChild(seriesOption)
+            seriesSelectors[iSelector].appendChild(document.createElement("br"))
+          })(obj,iSelector)
+        }
+      })(this,iSeries)
     }
 
     // create statistics elements

@@ -49,29 +49,24 @@ function createDataset(d, fname) {
 
   // Dataset(id, data, parent_node)
   var ds = new Dataset(id, fname, d, document.getElementById("datasets"));
-}
+};
 
 function analyze() {
   var analysisType = document.getElementById("analysisType").value;
-  var firstSeries = $("select.dataSeries:first-child");
-  var secondSeries = $("select.dataSeries:first-child");
-  var first_col = document.getElementById("analyzeButton").onclick.firstSeries;
-  var second_col = document.getElementById("analyzeButton").onclick.secondSeries;
-  var firstMeanSamples = [];
-  var secondMeanSamples = [];
+  var meanSamples = [[],[]];
   switch (analysisType) {
     case "means":
-      for (var iSample=0; iSample<100; iSample++)
-        firstMeanSamples.push(mean(bootstrap(first_col, first_col.length)))
-      for (var iSample=0; iSample<100; iSample++)
-        secondMeanSamples.push(mean(bootstrap(second_col, second_col.length)))
+      for (var iSeries=0; iSeries<2; iSeries++) {
+        var series = document.getElementById("analyzeButton").onclick.dataSeries[iSeries];
+        for (var iSample=0; iSample<100; iSample++)
+          meanSamples[iSeries].push(mean(bootstrap(series, series.length)))
+        console.log(meanSamples[iSeries])
+      }
       break;
     case "standard deviations":
-      console.log("standard deviation")
+      console.log("not yet implemented")
       break;
     default:
       console.log("unknown analysis type")
   }
-  console.log(firstMeanSamples)
-  console.log(secondMeanSamples)
 }
