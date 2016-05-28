@@ -55,10 +55,16 @@ function analyze() {
   var analysisType = document.getElementById("analysisType").value;
   var firstSeries = $("select.dataSeries:first-child");
   var secondSeries = $("select.dataSeries:first-child");
+  var first_col = document.getElementById("analyzeButton").onclick.firstSeries;
+  var second_col = document.getElementById("analyzeButton").onclick.secondSeries;
+  var firstMeanSamples = [];
+  var secondMeanSamples = [];
   switch (analysisType) {
     case "means":
       for (var iSample=0; iSample<100; iSample++)
-        ds.sampleMean();
+        firstMeanSamples.push(mean(bootstrap(first_col, first_col.length)))
+      for (var iSample=0; iSample<100; iSample++)
+        secondMeanSamples.push(mean(bootstrap(second_col, second_col.length)))
       break;
     case "standard deviations":
       console.log("standard deviation")
@@ -66,6 +72,6 @@ function analyze() {
     default:
       console.log("unknown analysis type")
   }
-  console.log(firstSeries[0].value)
-  console.log(secondSeries[0].value)
+  console.log(firstMeanSamples)
+  console.log(secondMeanSamples)
 }

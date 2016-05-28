@@ -75,30 +75,38 @@ function Dataset() {
     del.textContent = "x";
     this.root_node.appendChild(del);
 
-    // selectors for multi-dataset analysis
-    // ONCLICK, CALL A FUNCTION THAT CREATES THE Go! FUNCTION WITH THE CORRECT ARGUMENTS
+    // internal data structure
     this.columns = Object.keys(this.data);
-    for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
-      seriesSelectors = document.getElementsByClassName("dataSeries");
+    this.first_col = this.data[this.columns[0]];
+    this.data_table = new DataTable(this.root_node, this.data);
+
+    // selectors for multi-dataset analysis
+    var seriesSelectors = document.getElementsByClassName("dataSeries");
+    var goButton = document.getElementById("analyzeButton");
+    // first set
+    for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
+      var seriesOption = document.createElement("button");
+      seriesOption.textContent = this.name+'_'+this.columns[0];
+      seriesOption.setAttribute("id",this.name+'_'+this.columns[0]);
+      seriesOption.onclick = function() {
+        goButton.onclick.firstSeries = this.data[this.columns[0]];
+      }.bind(this);
+      seriesSelectors[iSelector].appendChild(seriesOption)
+      seriesSelectors[iSelector].appendChild(document.createElement("br"))
+    }
+    if (this.columns.length>1) {
+      // second set
       for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
-        var goButton = document.getElementById("analyzeButton");
         var seriesOption = document.createElement("button");
-        seriesOption.textContent = this.name+'_'+this.columns[iSeries];
-        seriesOption.setAttribute("id",this.name+'_'+this.columns[iSeries]);
+        seriesOption.textContent = this.name+'_'+this.columns[1];
+        seriesOption.setAttribute("id",this.name+'_'+this.columns[1]);
         seriesOption.onclick = function() {
-          this.parentNode.getData = function() {
-            console.log("you've chosen "+this.textContent)
-          }.bind(this);
-          console.log($(this.parentNode))
-        };
+          goButton.onclick.secondSeries = this.data[this.columns[1]];
+        }.bind(this);
         seriesSelectors[iSelector].appendChild(seriesOption)
         seriesSelectors[iSelector].appendChild(document.createElement("br"))
       }
     }
-
-    // internal data structure
-    this.first_col = this.data[this.columns[0]];
-    this.data_table = new DataTable(this.root_node, this.data);
 
     // create statistics elements
     var stats_elem = document.createElement("span");
