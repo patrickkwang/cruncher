@@ -23,6 +23,8 @@ function load_tab(tab, sheet_id) {
   current_sheet = sheet;
 }
 
+var datasets = [];
+
 function createDataset(d, fname) {
   /*
    * Name dataset
@@ -34,10 +36,10 @@ function createDataset(d, fname) {
 
   // append number to id if there are duplicates
   // get existing ids
-  var ids = []
-  var datasets = d3.selectAll(".dataset").each(function() {
-    ids.push($(this).attr("id"))
-  })
+  var ids = [];
+  for(var i = 0; i < datasets.length; i++) {
+    ids.push(datasets[i].name);
+  }
   // increase number until we find a unique one
   if (ids.indexOf(id) > -1) {
     var ind = 0;
@@ -49,15 +51,33 @@ function createDataset(d, fname) {
 
   // Dataset(id, data, parent_node)
   var ds = new Dataset(id, fname, d, document.getElementById("datasets"));
+  datasets.push(ds);
 };
+
+function get_dataseries(id) {
+  var dataset = id.substring(0, id.indexOf("/"));
+  var column = id.substring(id.indexOf("/")+1, id.length);
+  for(var i = 0; i < datasets.length; i++) {
+    if(datasets[i].name == dataset) {
+      for(var j = 0; j < datasets[i].columns.length; j++) {
+        if(datasets[i].columns[j] == column) {
+          return datasets[i].data[datasets[i].columns[j]];
+        }
+      }
+    }
+  }
+  console.error("Data series '" + id + "' not found.");
+  return null;
+}
 
 function analyze() {
   var analysisType = document.getElementById("analysisType").value;
-  var meanSamples = [[],[]];
+  var dataSeries = [get_dataseries(document.getElementById("dataSeries0").value), get_dataseries(document.getElementById("dataSeries1").value)];
   switch (analysisType) {
     case "means":
+      var meanSamples = [[],[]];
       for (var iSeries=0; iSeries<2; iSeries++) {
-        var series = document.getElementById("analyzeButton").onclick.dataSeries[iSeries];
+        var series = dataSeries[iSeries];
         for (var iSample=0; iSample<100; iSample++)
           meanSamples[iSeries].push(mean(bootstrap(series, series.length)))
         console.log(meanSamples[iSeries])

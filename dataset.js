@@ -81,6 +81,18 @@ function Dataset() {
     this.data_table = new DataTable(this.root_node, this.data);
 
     // selectors for multi-dataset analysis
+    for(var s = 0; s < 2; s++) {
+      var series = document.getElementById("dataSeries" + s);
+      for(var i = 0; i < this.columns.length; i++) {
+        var option = document.createElement("option");
+        var col_id = this.name + "/" + this.columns[i];
+        option.textContent = col_id;
+        option.setAttribute("value", col_id);
+        series.appendChild(option);
+      }
+    }
+
+    /*
     // ONCLICK, CALL A FUNCTION THAT CREATES THE Go! FUNCTION WITH THE CORRECT ARGUMENTS
     var seriesSelectors = document.getElementsByClassName("dataSeries");
     for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
@@ -101,6 +113,7 @@ function Dataset() {
         }
       })(this,iSeries)
     }
+    */
 
     // create statistics elements
     var stats_elem = document.createElement("span");

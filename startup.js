@@ -32,8 +32,4 @@ function startup() {
   current_sheet.style.display = "block";
   current_tab = document.getElementById("tab1");
   current_tab.style.borderBottom = "1px solid #FFFFFF";
-
-  // prepare Go! button for multi-dataset analysis
-  var goButton = document.getElementById("analyzeButton");
-  goButton.onclick.dataSeries = [null,null]
 }
