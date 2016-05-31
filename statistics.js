@@ -158,3 +158,10 @@ function getMinOfArray(x) {
 function getMaxOfArray(x) {
   return Math.max.apply(null, x);
 }
+
+function subtractArrays(a, b, n) {
+  var c = new Array(n);
+  for (var i=0; i<n; i++)
+    c[i] = a[i]-b[i];
+  return c;
+}

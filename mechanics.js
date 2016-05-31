@@ -30,6 +30,7 @@ function createDataset(d, fname) {
    * Name dataset
    * - making sure it doesn't conflict with existing datasets
    */
+  console.log(d)
 
   var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
   var id = name;
@@ -75,13 +76,21 @@ function analyze() {
   var dataSeries = [get_dataseries(document.getElementById("dataSeries0").value), get_dataseries(document.getElementById("dataSeries1").value)];
   switch (analysisType) {
     case "means":
+      var nSamples = 100;
       var meanSamples = [[],[]];
       for (var iSeries=0; iSeries<2; iSeries++) {
         var series = dataSeries[iSeries];
-        for (var iSample=0; iSample<100; iSample++)
+        for (var iSample=0; iSample<nSamples; iSample++)
           meanSamples[iSeries].push(mean(bootstrap(series, series.length)))
         console.log(meanSamples[iSeries])
       }
+      var differences = subtractArrays(meanSamples[0], meanSamples[1], nSamples);
+      var dsArray = [];
+      for (var i=0; i<nSamples; i++)
+        dsArray.push([differences[i]]);
+      //console.log(dsArray.unshift(['diffs']))
+      //console.log(dsArray)
+      createDataset(dsArray, 'differences.duh')
       break;
     case "standard deviations":
       console.log("not yet implemented")

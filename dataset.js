@@ -169,6 +169,7 @@ function Dataset() {
     // initialize data statistics
     var agg_stats = $("#" + id + " .agg_stats").get(0);
     for(col in this.data) {
+      console.log(this.data[col])
       agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(this.data[col]).toString() + " \u03c3" + stdv(this.data[col]).toString()));
       agg_stats.appendChild(document.createElement("br"));
     }
@@ -182,7 +183,15 @@ function Dataset() {
     // initialize chart and mean histogram
     this.chart = d3.select(svg);
     this.meanSamples = [];
-    this.edges = [0.5,1.5,2.5,3.5,4.5,5.5];
+    var arMax = getMaxOfArray(this.first_col);
+    var arMin = getMinOfArray(this.first_col);
+    var nBins = 5;
+    var arSpan = arMax-arMin;
+    var binSz = arSpan/(nBins-1);
+    this.edges = new Array(nBins+1);
+    for (var i=0; i<nBins+1; i++)
+      this.edges[i] = arMin - binSz/2 + i*binSz;
+    console.log(this.edges)
     this.createBar();
 
     // ------ set up button callbacks ------ //
@@ -265,7 +274,11 @@ function Dataset() {
     var nans = 0;
     for (var i = 0; i < csv_data.length; i++) {
       for (var j = 0; j < csv_data[i].length; j++) {
-        if(csv_data[i][j].trim().length == 0) {
+        console.log(csv_data[i][j])
+        console.log(typeof(csv_data[i][j]))
+        if(typeof(csv_data[i][j])=='number') {
+          this.data[header[j]].push(csv_data[i][j]);
+        } else if(csv_data[i][j].trim().length == 0) {
           this.data[header[j]].push(NaN);
           nans++;
         } else {
