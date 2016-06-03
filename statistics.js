@@ -152,11 +152,13 @@ function r2(x,y,fit) {
 }
 
 function getMinOfArray(x) {
-  return Math.min.apply(null, x);
+  var nanToInf = function(el,i,arr){return isNaN(el)?Infinity:el}
+  return Math.min.apply(null,x.map(nanToInf));
 }
 
 function getMaxOfArray(x) {
-  return Math.max.apply(null, x);
+  var nanToNegInf = function(el,i,arr){return isNaN(el)?-Infinity:el}
+  return Math.max.apply(null,x.map(nanToNegInf));
 }
 
 function subtractArrays(a, b, n) {

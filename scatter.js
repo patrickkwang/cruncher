@@ -46,7 +46,7 @@ function Scatter() {
     var xSpan = getMaxOfArray(first_col) - getMinOfArray(first_col),
         ySpan = getMaxOfArray(second_col) - getMinOfArray(second_col);
     this.xScale.domain([getMinOfArray(first_col)-xSpan/10, getMaxOfArray(first_col)+xSpan/10]);
-    this.yScale.domain([getMinOfArray(second_col)-ySpan/10,getMaxOfArray(second_col)+ySpan/10]);
+    this.yScale.domain([getMinOfArray(second_col)-ySpan/10, getMaxOfArray(second_col)+ySpan/10]);
 
     // x-axis
     this.svg.append("g")
@@ -74,6 +74,8 @@ function Scatter() {
 
     // draw dots
     for (var i=0; i<first_col.length; i++) {
+      if (isNaN(first_col[i]) || isNaN(second_col[i]))
+        continue
       this.svg.append("circle")
           .attr("class", "dot")
           .attr("r", 3.5)
