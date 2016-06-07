@@ -88,6 +88,7 @@ function Dataset() {
         var col_id = this.name + "/" + this.columns[i];
         option.textContent = col_id;
         option.setAttribute("value", col_id);
+        option.setAttribute("class", col_id);
         series.appendChild(option);
       }
     }
@@ -130,6 +131,7 @@ function Dataset() {
       fit_btn.textContent = "Fit!";
     }
 
+    /*
     var sample1_btn = document.createElement("button");
     sample1_btn.setAttribute("type", "button");
     sample1_btn.textContent = "Sample!";
@@ -141,6 +143,7 @@ function Dataset() {
     var sample100_btn = document.createElement("button");
     sample100_btn.setAttribute("type", "button");
     sample100_btn.textContent = "Sample 100!";
+    */
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "chart");
@@ -159,16 +162,16 @@ function Dataset() {
       this.root_node.appendChild(document.createElement("br"));
       this.root_node.appendChild(document.createElement("br"));
     }
+    /*
     this.root_node.appendChild(sample1_btn);
     this.root_node.appendChild(sample10_btn);
     this.root_node.appendChild(sample100_btn);
+    */
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(svg);
 
     // initialize data statistics
     for(col in this.data) {
-      console.log(this.data[col])
       stats_elem.appendChild(document.createTextNode(col + ": \u03bc" + mean(this.data[col]).toString() + " \u03c3" + stdv(this.data[col]).toString()));
       stats_elem.appendChild(document.createElement("br"));
     }
@@ -177,21 +180,21 @@ function Dataset() {
     if (this.columns.length>1) {
       this.second_col = this.data[this.columns[1]];
       var scatter = new Scatter(this.data, d3.select(this.root_node));
+    } else {
+      this.root_node.appendChild(svg);
+      // initialize chart and mean histogram
+      this.chart = d3.select(svg);
+      this.meanSamples = [];
+      var arMax = getMaxOfArray(this.first_col);
+      var arMin = getMinOfArray(this.first_col);
+      var nBins = 5;
+      var arSpan = arMax-arMin;
+      var binSz = arSpan/(nBins-1);
+      this.edges = new Array(nBins+1);
+      for (var i=0; i<nBins+1; i++)
+        this.edges[i] = arMin - binSz/2 + i*binSz;
+      this.createBar();
     }
-
-    // initialize chart and mean histogram
-    this.chart = d3.select(svg);
-    this.meanSamples = [];
-    var arMax = getMaxOfArray(this.first_col);
-    var arMin = getMinOfArray(this.first_col);
-    var nBins = 5;
-    var arSpan = arMax-arMin;
-    var binSz = arSpan/(nBins-1);
-    this.edges = new Array(nBins+1);
-    for (var i=0; i<nBins+1; i++)
-      this.edges[i] = arMin - binSz/2 + i*binSz;
-    console.log(this.edges)
-    this.createBar();
 
     // ------ set up button callbacks ------ //
 
@@ -199,6 +202,18 @@ function Dataset() {
     del.addEventListener("click", function(){
       parent_node.removeChild(this.root_node)
       document.getElementById("tabs").removeChild(this.tab); // and get rid of tab
+
+      // selectors for multi-dataset analysis
+      for (var i = 0; i < this.columns.length; i++) {
+        var col_id = this.name + "/" + this.columns[i];
+        var options = document.getElementsByClassName(col_id);
+        console.log(options)
+        for (var j = options.length-1; j>-1; j--) {
+          console.log(options[j].parentNode)
+          options[j].parentNode.removeChild(options[j]);
+        }
+      }
+
       console.log("deleted.")
 
       current_sheet = document.getElementById("sheet1");
@@ -228,6 +243,7 @@ function Dataset() {
       }.bind(this));
     }
 
+    /*
     // callback for sample1
     $(sample1_btn).click(function(){
       this.sampleMean();
@@ -247,6 +263,7 @@ function Dataset() {
         this.sampleMean();
       this.updateBar();
     }.bind(this));
+    */
   }
 
   this.sampleMean = function() {
@@ -273,8 +290,6 @@ function Dataset() {
     var nans = 0;
     for (var i = 0; i < csv_data.length; i++) {
       for (var j = 0; j < csv_data[i].length; j++) {
-        console.log(csv_data[i][j])
-        console.log(typeof(csv_data[i][j]))
         if(typeof(csv_data[i][j])=='number') {
           this.data[header[j]].push(csv_data[i][j]);
         } else if(csv_data[i][j].trim().length == 0) {
@@ -294,7 +309,7 @@ function Dataset() {
   }
 
   this.createBar = function() {
-    var hist_data = histogram(this.meanSamples, this.edges);
+    var hist_data = histogram(this.first_col, this.edges);
 
     var barWidth = 20,
       height = 210;
@@ -315,7 +330,7 @@ function Dataset() {
   }
 
   this.updateBar = function() {
-    var hist_data = histogram(this.meanSamples, this.edges)
+    var hist_data = histogram(this.first_col, this.edges)
 
     var barWidth = this.chart.attr("width") / hist_data.length,
       height = this.chart.attr("height");

@@ -23,7 +23,12 @@ function stdv(x) {
 function bootstrap(x,n) {
   var samples = new Array(n);
   for (i=0; i<n; i++) {
-    samples[i] = x[Math.floor(Math.random()*x.length)];
+    var ind = Math.floor(Math.random()*x.length);
+    if (isNaN(x[ind])) {
+      i--;
+      continue
+    }
+    samples[i] = x[ind];
   }
   return samples;
 }
