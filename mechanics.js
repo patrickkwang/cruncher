@@ -30,10 +30,9 @@ function createDataset(d, fname) {
    * Name dataset
    * - making sure it doesn't conflict with existing datasets
    */
-  console.log(d)
+  console.log(d);
 
-  var name = fname.substring(0, fname.lastIndexOf('.')).toLowerCase();
-  var id = name;
+  var id = fname;
 
   // append number to id if there are duplicates
   // get existing ids

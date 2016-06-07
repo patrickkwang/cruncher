@@ -167,11 +167,10 @@ function Dataset() {
     this.root_node.appendChild(svg);
 
     // initialize data statistics
-    var agg_stats = $("#" + id + " .agg_stats").get(0);
     for(col in this.data) {
       console.log(this.data[col])
-      agg_stats.appendChild(document.createTextNode(col + ": \u03bc" + mean(this.data[col]).toString() + " \u03c3" + stdv(this.data[col]).toString()));
-      agg_stats.appendChild(document.createElement("br"));
+      stats_elem.appendChild(document.createTextNode(col + ": \u03bc" + mean(this.data[col]).toString() + " \u03c3" + stdv(this.data[col]).toString()));
+      stats_elem.appendChild(document.createElement("br"));
     }
 
     // scatter plot

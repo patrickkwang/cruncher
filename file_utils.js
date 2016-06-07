@@ -32,9 +32,8 @@ function load_file(file) {
 
 function file_loaded(fname, content, success) {
   if (success) {
-    var file_type = fname.substring(fname.lastIndexOf('.') + 1).toLowerCase();
-    $("#status").text("Reading " + file_type + " file...");
-    console.log("Reading " + file_type + " file...");
+    $("#status").text("Reading " + fname + "...");
+    console.log("Reading " + fname + "...");
     var edges;
     $("#status").text(fname + " loaded");
     console.log(fname + " loaded");
