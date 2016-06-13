@@ -25,12 +25,11 @@ function load_tab(tab, sheet_id) {
 
 var datasets = [];
 
-function createDataset(d, fname) {
+function createDataset(d, fname, genFcn = function(){return null;}) {
   /*
    * Name dataset
    * - making sure it doesn't conflict with existing datasets
    */
-  console.log(d);
 
   var id = fname;
 
@@ -50,7 +49,7 @@ function createDataset(d, fname) {
   }
 
   // Dataset(id, data, parent_node)
-  var ds = new Dataset(id, fname, d, document.getElementById("datasets"));
+  var ds = new Dataset(id, fname, d, document.getElementById("datasets"), genFcn);
   datasets.push(ds);
 };
 
@@ -72,7 +71,16 @@ function get_dataseries(id) {
 
 function analyze() {
   var analysisType = document.getElementById("analysisType").value;
-  var dataSeries = [get_dataseries(document.getElementById("dataSeries0").value), get_dataseries(document.getElementById("dataSeries1").value)];
+  var dataSeriesName = [document.getElementById("dataSeries0").value, document.getElementById("dataSeries1").value];
+  var differences = getData(dataSeriesName, analysisType);
+  var dsArray = [];
+  for (var i=0; i<differences.length; i++)
+    dsArray.push([differences[i]]);
+  createDataset(dsArray, 'differences', function() {return getData(dataSeriesName, analysisType);})
+}
+
+function getData(dataSeriesName, analysisType) {
+  var dataSeries = [get_dataseries(dataSeriesName[0]), get_dataseries(dataSeriesName[1])];
   switch (analysisType) {
     case "means":
       var nSamples = 100;
@@ -81,20 +89,15 @@ function analyze() {
         var series = dataSeries[iSeries];
         for (var iSample=0; iSample<nSamples; iSample++)
           meanSamples[iSeries].push(mean(bootstrap(series, series.length)))
-        console.log(meanSamples[iSeries])
       }
       var differences = subtractArrays(meanSamples[0], meanSamples[1], nSamples);
-      var dsArray = [];
-      for (var i=0; i<nSamples; i++)
-        dsArray.push([differences[i]]);
-      //console.log(dsArray.unshift(['diffs']))
-      //console.log(dsArray)
-      createDataset(dsArray, 'differences.duh')
       break;
     case "standard deviations":
-      console.log("not yet implemented")
-      break;
+      console.log("not yet implemented");
+      return;
     default:
-      console.log("unknown analysis type")
+      console.log("unknown analysis type");
+      return;
   }
+  return differences;
 }

@@ -46,10 +46,11 @@ function DataTable() {
 
 
 function Dataset() {
-  this.init = function(id, fname, csv_data, parent_node) {
+  this.init = function(id, fname, csv_data, parent_node, genFcn) {
 
     this.name = id;
     this.load_data(csv_data);
+    this.genFcn = genFcn;
 
     // first, make the dataset block
     this.root_node = document.createElement("div");
@@ -93,29 +94,6 @@ function Dataset() {
       }
     }
 
-    /*
-    // ONCLICK, CALL A FUNCTION THAT CREATES THE Go! FUNCTION WITH THE CORRECT ARGUMENTS
-    var seriesSelectors = document.getElementsByClassName("dataSeries");
-    for (var iSeries=0; iSeries<this.columns.length; iSeries++) {
-      (function(obj,iSeries){
-        for (var iSelector=0; iSelector<seriesSelectors.length; iSelector++) {
-          (function(obj,iSelector){
-            var seriesSelectors = document.getElementsByClassName("dataSeries");
-            var goButton = document.getElementById("analyzeButton");
-            var seriesOption = document.createElement("button");
-            seriesOption.textContent = obj.name+'_'+obj.columns[iSeries];
-            seriesOption.setAttribute("id",obj.name+'_'+obj.columns[iSeries]);
-            seriesOption.onclick = function() {
-              goButton.onclick.dataSeries[iSelector] = obj.data[obj.columns[iSeries]];
-            }.bind(obj);
-            seriesSelectors[iSelector].appendChild(seriesOption)
-            seriesSelectors[iSelector].appendChild(document.createElement("br"))
-          })(obj,iSelector)
-        }
-      })(this,iSeries)
-    }
-    */
-
     // create statistics elements
     var stats_elem = document.createElement("span");
     stats_elem.setAttribute("class", "agg_stats");
@@ -131,19 +109,9 @@ function Dataset() {
       fit_btn.textContent = "Fit!";
     }
 
-    /*
-    var sample1_btn = document.createElement("button");
-    sample1_btn.setAttribute("type", "button");
-    sample1_btn.textContent = "Sample!";
-
-    var sample10_btn = document.createElement("button");
-    sample10_btn.setAttribute("type", "button");
-    sample10_btn.textContent = "Sample 10!";
-
-    var sample100_btn = document.createElement("button");
-    sample100_btn.setAttribute("type", "button");
-    sample100_btn.textContent = "Sample 100!";
-    */
+    var sample_btn = document.createElement("button");
+    sample_btn.setAttribute("type", "button");
+    sample_btn.textContent = "Get more data";
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "chart");
@@ -162,11 +130,7 @@ function Dataset() {
       this.root_node.appendChild(document.createElement("br"));
       this.root_node.appendChild(document.createElement("br"));
     }
-    /*
-    this.root_node.appendChild(sample1_btn);
-    this.root_node.appendChild(sample10_btn);
-    this.root_node.appendChild(sample100_btn);
-    */
+    this.root_node.appendChild(sample_btn);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
 
@@ -207,9 +171,7 @@ function Dataset() {
       for (var i = 0; i < this.columns.length; i++) {
         var col_id = this.name + "/" + this.columns[i];
         var options = document.getElementsByClassName(col_id);
-        console.log(options)
         for (var j = options.length-1; j>-1; j--) {
-          console.log(options[j].parentNode)
           options[j].parentNode.removeChild(options[j]);
         }
       }
@@ -243,27 +205,9 @@ function Dataset() {
       }.bind(this));
     }
 
-    /*
-    // callback for sample1
-    $(sample1_btn).click(function(){
-      this.sampleMean();
-      this.updateBar()
+    $(sample_btn).click(function(){
+      console.log(this.genFcn())
     }.bind(this));
-
-    // callback for sample10
-    $(sample10_btn).click(function(){
-      for (var iSample=0; iSample<10; iSample++)
-        this.sampleMean();
-      this.updateBar()
-    }.bind(this));
-
-    // callback for sample100
-    $(sample100_btn).click(function(){
-      for (var iSample=0; iSample<100; iSample++)
-        this.sampleMean();
-      this.updateBar();
-    }.bind(this));
-    */
   }
 
   this.sampleMean = function() {
