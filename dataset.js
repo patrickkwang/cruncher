@@ -109,9 +109,11 @@ function Dataset() {
       fit_btn.textContent = "Fit!";
     }
 
-    var sample_btn = document.createElement("button");
-    sample_btn.setAttribute("type", "button");
-    sample_btn.textContent = "Get more data";
+    if (this.genFcn != null) {
+      var sample_btn = document.createElement("button");
+      sample_btn.setAttribute("type", "button");
+      sample_btn.textContent = "Get more data";
+    }
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "chart");
@@ -130,9 +132,11 @@ function Dataset() {
       this.root_node.appendChild(document.createElement("br"));
       this.root_node.appendChild(document.createElement("br"));
     }
-    this.root_node.appendChild(sample_btn);
-    this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(document.createElement("br"));
+    if (this.genFcn != null) {
+      this.root_node.appendChild(sample_btn);
+      this.root_node.appendChild(document.createElement("br"));
+      this.root_node.appendChild(document.createElement("br"));
+    }
 
     // initialize data statistics
     for(col in this.data) {
@@ -140,7 +144,7 @@ function Dataset() {
       stats_elem.appendChild(document.createElement("br"));
     }
 
-    // scatter plot
+    // scatter plot/histogram
     if (this.columns.length>1) {
       this.second_col = this.data[this.columns[1]];
       var scatter = new Scatter(this.data, d3.select(this.root_node));
@@ -148,7 +152,6 @@ function Dataset() {
       this.root_node.appendChild(svg);
       // initialize chart and mean histogram
       this.chart = d3.select(svg);
-      this.meanSamples = [];
       var arMax = getMaxOfArray(this.first_col);
       var arMin = getMinOfArray(this.first_col);
       var nBins = 5;
@@ -205,9 +208,11 @@ function Dataset() {
       }.bind(this));
     }
 
-    $(sample_btn).click(function(){
-      console.log(this.genFcn())
-    }.bind(this));
+    if (this.genFcn != null) {
+      $(sample_btn).click(function(){
+        console.log(this.genFcn())
+      }.bind(this));
+    }
   }
 
   this.sampleMean = function() {
@@ -270,7 +275,7 @@ function Dataset() {
       .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
 
     // apply remaining style
-    this.styleBars(bar.append("rect"), bar.append("text"), d3.max(hist_data), barWidth, height)
+    this.styleBars(bar.append("rect"), bar.append("text"), getMaxOfArray(hist_data), barWidth, height)
   }
 
   this.updateBar = function() {
@@ -283,7 +288,7 @@ function Dataset() {
     var bar = this.chart.selectAll("g").data(hist_data);
 
     // apply style
-    this.styleBars(bar.select("rect"), bar.select("text"), d3.max(hist_data), barWidth, height);
+    this.styleBars(bar.select("rect"), bar.select("text"), getMaxOfArray(hist_data), barWidth, height);
   }
 
   this.styleBars = function(rect, text, dataMax, barWidth, height) {
@@ -313,8 +318,11 @@ function Dataset() {
       .text(function(d) { return d; });
 
     // over-bar numbers (for short bars)
+    console.log(height)
     text
       .style("text-anchor",function(d) {
+          console.log(this) //                              [b]
+          console.log(y(d), this.getBBox().width)
           if (height-y(d)-5 < this.getBBox().width)
             return "end";
         })

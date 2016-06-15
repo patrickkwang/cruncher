@@ -25,7 +25,7 @@ function load_tab(tab, sheet_id) {
 
 var datasets = [];
 
-function createDataset(d, fname, genFcn = function(){return null;}) {
+function createDataset(d, fname, genFcn = null) {
   /*
    * Name dataset
    * - making sure it doesn't conflict with existing datasets
