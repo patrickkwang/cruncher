@@ -99,6 +99,22 @@ function Dataset() {
     stats_elem.setAttribute("class", "agg_stats");
 
     var icdf_input = document.createElement("input");
+    icdf_input.setAttribute("type", "range");
+    icdf_input.setAttribute("min", 0.0);
+    icdf_input.setAttribute("value", 0.5);
+    icdf_input.setAttribute("max", 1.0);
+    icdf_input.setAttribute("step", 0.01);
+    icdf_input.setAttribute("style", "width:200px; margin-right:20px");
+    var icdf_range_labels = document.createElement("div");
+    icdf_range_labels.setAttribute("style", "width:200px; display:inline-block");
+    var icdf_lo = document.createElement("span");
+    icdf_lo.textContent = "0.0";
+    icdf_lo.setAttribute("style", "float:left; position:relative; left:-10px");
+    var icdf_hi = document.createElement("span");
+    icdf_hi.textContent = "1.0";
+    icdf_hi.setAttribute("style", "float:right; position:relative; right:-10px");
+    icdf_range_labels.appendChild(icdf_lo);
+    icdf_range_labels.appendChild(icdf_hi);
     var icdf_btn = document.createElement("button");
     icdf_btn.setAttribute("type", "button");
     icdf_btn.textContent = "iCDF";
@@ -125,6 +141,8 @@ function Dataset() {
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(icdf_input);
     this.root_node.appendChild(icdf_btn);
+    this.root_node.appendChild(document.createElement("br"));
+    this.root_node.appendChild(icdf_range_labels);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
     if (this.columns.length>1) {
