@@ -101,6 +101,7 @@ function Dataset() {
     var stats_elem = document.createElement("span");
     stats_elem.setAttribute("class", "agg_stats");
 
+    /*
     var icdf_input = document.createElement("input");
     icdf_input.setAttribute("type", "range");
     icdf_input.setAttribute("min", 0.0);
@@ -108,6 +109,12 @@ function Dataset() {
     icdf_input.setAttribute("max", 1.0);
     icdf_input.setAttribute("step", 0.01);
     icdf_input.setAttribute("style", "width:200px; margin-right:20px");
+    */
+    var icdf_input = new Slider(0.0, 1.0, 0.2);
+    icdf_input.width(200);
+    icdf_input.height(20);
+    icdf_input.node().style.marginRight = "20px";
+
     var icdf_range_labels = document.createElement("div");
     icdf_range_labels.setAttribute("style", "width:200px; display:inline-block");
     var icdf_lo = document.createElement("span");
@@ -142,7 +149,7 @@ function Dataset() {
     this.root_node.appendChild(stats_elem);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(icdf_input);
+    this.root_node.appendChild(icdf_input.node());
     this.root_node.appendChild(icdf_btn);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(icdf_range_labels);
