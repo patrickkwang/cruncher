@@ -286,30 +286,28 @@ function Dataset() {
       .attr("width", barWidth * hist_data.length)
       .attr("height", height);
 
+
+    for (var i=0; i<hist_data.length; i++) {
+      if (isNaN(hist_data[i]))
+        continue
+      var g = this.chart.append("g");
+      g.attr("transform", "translate(" + i * barWidth + ",0)");
+      this.styleBar(g.append("rect"), g.append("text"), getMaxOfArray(hist_data), barWidth, height, hist_data[i], i);
+    }
+
+    /*
     // place bars and position horizontally
-    var bar = this.chart.selectAll("g")
+    var bar = this.chart.selectAll("g") h
       .data(hist_data)
       .enter().append("g")
       .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
 
     // apply remaining style
     this.styleBars(bar.append("rect"), bar.append("text"), getMaxOfArray(hist_data), barWidth, height)
+    */
   }
 
-  this.updateBar = function() {
-    var hist_data = histogram(this.first_col, this.edges)
-
-    var barWidth = this.chart.attr("width") / hist_data.length,
-      height = this.chart.attr("height");
-
-    // bind new data
-    var bar = this.chart.selectAll("g").data(hist_data);
-
-    // apply style
-    this.styleBars(bar.select("rect"), bar.select("text"), getMaxOfArray(hist_data), barWidth, height);
-  }
-
-  this.styleBars = function(rect, text, dataMax, barWidth, height) {
+  this.styleBar = function(rect, text, dataMax, barWidth, height, d, i) {
     // scales data to chart height
     var y = d3.scale.linear()
       .domain([0, dataMax])
@@ -317,6 +315,7 @@ function Dataset() {
 
     // y position of numbers
     var yFcn = function(d, obj) {
+      //console.log(obj.getBBox())
       if (height-y(d)-5 < obj.getBBox().width)
         return y(d)-5;
       else
@@ -325,29 +324,23 @@ function Dataset() {
 
     // bar and text styling
     rect
-      .attr("y", function(d) { return y(d); })
+      .attr("y", y(d))
       .attr("width", barWidth - 1)
-      .attr("height", function(d) { return height - y(d); });
+      .attr("height", height - y(d));
     text
+      .text(d)
       .attr("x", barWidth / 2)
-      .attr("y", function(d) { return yFcn(d, this); })
+      .attr("y", yFcn(d, text[0][0]))
       .attr("dy", ".375em")
-      .attr("transform", function(d){ return "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, this)); })
-      .text(function(d) { return d; });
+      .attr("transform", "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, text[0][0])))
+      .attr("id", "boxSize "+i);
+    console.log(text[0][0].getBBox())
 
     // over-bar numbers (for short bars)
-    console.log(height)
-    text
-      .style("text-anchor",function(d) {
-          console.log(this) //                              [b]
-          console.log(y(d), this.getBBox().width)
-          if (height-y(d)-5 < this.getBBox().width)
-            return "end";
-        })
-      .style("fill",function(d) {
-          if (height-y(d)-5 < this.getBBox().width)
-            return "steelblue";
-        });
+    if (height-y(d)-5 < text[0][0].getBBox().width) {
+      text.style("text-anchor", "end");
+      text.style("fill", "steelblue");
+    }
   }
 
   this.init.apply(this, arguments);
