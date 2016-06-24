@@ -65,6 +65,16 @@ function icdf(x,p) {
 }
 
 function linearFit(x,y) {
+  // clone the arrays so that when we remove NaNs, it doesn't affect the originals
+  x = x.slice(0);
+  y = y.slice(0);
+  for (var i=x.length-1; i>=0; i--) {
+    if (isNaN(x[i]) || isNaN(y[i])) {
+      x.splice(i,1);
+      y.splice(i,1);
+    }
+  }
+
   // solve the system of equations y=mx+b
   var ones = new Array(x.length).fill(1);
   x = ones.concat(x);
@@ -129,6 +139,18 @@ function predict(x,fit) {
 }
 
 function rmse(x,y,fit) {
+  // root mean squared error, ignores NaNs
+
+  // clone the arrays so that when we remove NaNs, it doesn't affect the originals
+  x = x.slice(0);
+  y = y.slice(0);
+  for (var i=x.length-1; i>=0; i--) {
+    if (isNaN(x[i]) || isNaN(y[i])) {
+      x.splice(i,1);
+      y.splice(i,1);
+    }
+  }
+
   xhat = predict(x,fit);
   if (Array.isArray(x)) {
     var sse = 0; // sum of squared errors
@@ -141,6 +163,18 @@ function rmse(x,y,fit) {
 }
 
 function r2(x,y,fit) {
+  // "coefficient of determination", ignores NaNs
+
+  // clone the arrays so that when we remove NaNs, it doesn't affect the originals
+  x = x.slice(0);
+  y = y.slice(0);
+  for (var i=x.length-1; i>=0; i--) {
+    if (isNaN(x[i]) || isNaN(y[i])) {
+      x.splice(i,1);
+      y.splice(i,1);
+    }
+  }
+
   yhat = predict(x,fit);
   ybar = mean(y);
   if (Array.isArray(x)) {

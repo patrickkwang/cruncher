@@ -344,7 +344,6 @@ function Dataset() {
       .attr("dy", ".375em")
       .attr("transform", "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, text.node())))
       .attr("id", "boxSize "+i);
-    console.log(text.node().getBBox())
 
     // over-bar numbers (for short bars)
     if (height-y(d)-5 < text.node().getBBox().width) {
