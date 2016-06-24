@@ -115,16 +115,6 @@ function Dataset() {
     icdf_input.height(20);
     icdf_input.node().style.marginRight = "20px";
 
-    var icdf_range_labels = document.createElement("div");
-    icdf_range_labels.setAttribute("style", "width:200px; display:inline-block");
-    var icdf_lo = document.createElement("span");
-    icdf_lo.textContent = "0.0";
-    icdf_lo.setAttribute("style", "float:left; position:relative; left:-10px");
-    var icdf_hi = document.createElement("span");
-    icdf_hi.textContent = "1.0";
-    icdf_hi.setAttribute("style", "float:right; position:relative; right:-10px");
-    icdf_range_labels.appendChild(icdf_lo);
-    icdf_range_labels.appendChild(icdf_hi);
     var icdf_btn = document.createElement("button");
     icdf_btn.setAttribute("type", "button");
     icdf_btn.textContent = "iCDF";
@@ -151,8 +141,6 @@ function Dataset() {
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(icdf_input.node());
     this.root_node.appendChild(icdf_btn);
-    this.root_node.appendChild(document.createElement("br"));
-    this.root_node.appendChild(icdf_range_labels);
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(document.createElement("br"));
     if (this.columns.length>1) {
@@ -219,8 +207,10 @@ function Dataset() {
 
     // callback for iCDF
     $(icdf_btn).click(function(){
-      var val = icdf_input.value;
-      console.log(icdf(this.first_col, val))
+      var val = icdf_input.values();
+      var start = val.start;
+      var end = val.end;
+      console.log(icdf(this.first_col, val.start), icdf(this.first_col, val.end))
       return false;
     }.bind(this));
 
