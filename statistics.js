@@ -54,7 +54,7 @@ function icdf(x,p) {
   // mostly for inferring confidence intervals
   //
   // performs linear interpolation between data points
-  x.sort()
+  x.sort(function(a, b){return a-b})
   position = p*(x.length-1);
   left = Math.floor(position);
   right = Math.ceil(position);

@@ -210,7 +210,7 @@ function Dataset() {
       var val = icdf_input.values();
       var start = val.start;
       var end = val.end;
-      console.log(icdf(this.first_col, val.start), icdf(this.first_col, val.end))
+      console.log(icdf(this.first_col, start), icdf(this.first_col, end))
       return false;
     }.bind(this));
 
