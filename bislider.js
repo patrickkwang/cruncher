@@ -43,12 +43,12 @@ function Slider(st, en, val) {
   var start = st;
   var end = en;
 
-  var value = val;
+  var left_value = val;
   if(val == null) {
-    value = 10;
+    left_value = 10;
   }
 
-  var end_value = end - (value - start);
+  var right_value = end - (left_value - start);
 
   var left_knob = document.createElement("div");
   left_knob.style.border = "1px solid #FFFFFF";
@@ -67,29 +67,29 @@ function Slider(st, en, val) {
   right_knob.style.top = 0;
 
   this.resize = function() {
-    val0.textContent = value.toFixed(2)
-    val1.textContent = end_value.toFixed(2);
+    val0.textContent = left_value.toFixed(2)
+    val1.textContent = right_value.toFixed(2);
 
     bar.style.top = (h / 8 + 1) + "px";
     inner_bar.style.top = (h / 3 + 1) + "px";
 
     left_knob.style.width = h+"px";
     left_knob.style.height = h+"px";
-    left_knob.style.left = (w / (end - start) * (value - start) - h/2) + "px";
+    left_knob.style.left = (w / (end - start) * (left_value - start) - h/2) + "px";
 
     right_knob.style.width = h+"px";
     right_knob.style.height = h+"px";
-    right_knob.style.left = (w / (end - start) * (end_value - start) - h/2) + "px";
+    right_knob.style.left = (w / (end - start) * (right_value - start) - h/2) + "px";
 
-    inner_bar.style.left = (w / (end - start) * (value - start)) + "px";
-    inner_bar.style.width = (w / (end - start) * (end_value - value)) + "px";
+    inner_bar.style.left = (w / (end - start) * (left_value - start)) + "px";
+    inner_bar.style.width = (w / (end - start) * (right_value - left_value)) + "px";
   }
 
   div.appendChild(left_knob);
   div.appendChild(right_knob);
 
   this.values = function() {
-    return {start: parseFloat(value.toFixed(2)), end: parseFloat(end_value.toFixed(2))}
+    return {start: parseFloat(left_value.toFixed(2)), end: parseFloat(right_value.toFixed(2))}
   }
 
 
@@ -115,11 +115,11 @@ function Slider(st, en, val) {
     if(moving != null) {
       var x = (e.clientX - div.offsetLeft);
       if(moving == left_knob) {
-        value = start + Math.max(0, Math.min(x / w * (end - start), (end-start)/2));
-        end_value = end - (value - start);
+        left_value = start + Math.max(0, Math.min(x / w * (end - start), (end-start)/2));
+        right_value = end - (left_value - start);
       } else if(moving == right_knob) {
-        end_value = Math.min(end, Math.max(x / w * (end - start) + start, start+(end-start)/2));
-        value = start + (end - end_value);
+        right_value = Math.min(end, Math.max(x / w * (end - start) + start, start+(end-start)/2));
+        left_value = start + (end - right_value);
       }
       this.resize();
     }
