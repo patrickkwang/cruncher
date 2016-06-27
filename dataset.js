@@ -111,7 +111,7 @@ function Dataset() {
     icdf_input.setAttribute("style", "width:200px; margin-right:20px");
     */
     var icdf_input = new Slider(0.0, 1.0, 0.2);
-    icdf_input.width(201);
+    icdf_input.width(200);
     icdf_input.height(20);
     icdf_input.node().style.marginRight = "20px";
 

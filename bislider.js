@@ -45,7 +45,7 @@ function Slider(st, en, val) {
 
   var left_value = val;
   if(val == null) {
-    left_value = 10;
+    left_value = 0.5;
   }
 
   var right_value = end - (left_value - start);
@@ -67,6 +67,11 @@ function Slider(st, en, val) {
   right_knob.style.top = 0;
 
   this.resize = function() {
+    // fix rounding issue
+    var wiggle = 0.000001; // -- NOTE: this number should be 1) less than the steps on your slider and 2) more than the floating-point precision error
+    left_value = Math.floor(left_value * 100 + wiggle) / 100.0;
+    right_value = Math.ceil(right_value * 100 - wiggle) / 100.0;
+
     val0.textContent = left_value.toFixed(2)
     val1.textContent = right_value.toFixed(2);
 
