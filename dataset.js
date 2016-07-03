@@ -131,9 +131,6 @@ function Dataset() {
       sample_btn.textContent = "Get more data";
     }
 
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "chart");
-
     this.root_node.appendChild(document.createTextNode("Aggregate stats: "));
     this.root_node.appendChild(document.createElement("br"));
     this.root_node.appendChild(stats_elem);
@@ -165,9 +162,7 @@ function Dataset() {
       this.second_col = this.data[this.columns[1]];
       var scatter = new Scatter(this.data, d3.select(this.root_node));
     } else {
-      this.root_node.appendChild(svg);
       // initialize chart and mean histogram
-      this.chart = d3.select(svg);
       var arMax = getMaxOfArray(this.first_col);
       var arMin = getMinOfArray(this.first_col);
       var nBins = 5;
@@ -176,7 +171,9 @@ function Dataset() {
       this.edges = new Array(nBins+1);
       for (var i=0; i<nBins+1; i++)
         this.edges[i] = arMin - binSz/2 + i*binSz;
-      this.createBar();
+      var hist_data = histogram(this.first_col, this.edges);
+      //this.createBar(hist_data);
+      var barchart = new BarChart(hist_data, this.root_node);
     }
 
     // ------ set up button callbacks ------ //
@@ -272,73 +269,6 @@ function Dataset() {
     }
     if(nans > 0) {
       console.error(nans + " values were not numeric, now they are NaN.");
-    }
-  }
-
-  this.createBar = function() {
-    var hist_data = histogram(this.first_col, this.edges);
-
-    var barWidth = 20,
-      height = 210;
-
-    // initialize chart size
-    this.chart
-      .attr("width", barWidth * hist_data.length)
-      .attr("height", height);
-
-
-    for (var i=0; i<hist_data.length; i++) {
-      if (isNaN(hist_data[i]))
-        continue
-      var g = this.chart.append("g");
-      g.attr("transform", "translate(" + i * barWidth + ",0)");
-      this.styleBar(g.append("rect"), g.append("text"), getMaxOfArray(hist_data), barWidth, height, hist_data[i], i);
-    }
-
-    /*
-    // place bars and position horizontally
-    var bar = this.chart.selectAll("g") h
-      .data(hist_data)
-      .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });
-
-    // apply remaining style
-    this.styleBars(bar.append("rect"), bar.append("text"), getMaxOfArray(hist_data), barWidth, height)
-    */
-  }
-
-  this.styleBar = function(rect, text, dataMax, barWidth, height, d, i) {
-    // scales data to chart height
-    var y = d3.scale.linear()
-      .domain([0, dataMax])
-      .range([height, 0]);
-
-    // y position of numbers
-    var yFcn = function(d, obj) {
-      //console.log(obj.getBBox())
-      if (height-y(d)-5 < obj.getBBox().width)
-        return y(d)-5;
-      else
-        return y(d)+5;
-    }
-
-    // bar and text styling
-    rect
-      .attr("y", y(d))
-      .attr("width", barWidth - 1)
-      .attr("height", height - y(d));
-    text
-      .text(d)
-      .attr("x", barWidth / 2)
-      .attr("y", yFcn(d, text.node()))
-      .attr("dy", ".375em")
-      .attr("transform", "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, text.node())))
-      .attr("id", "boxSize "+i);
-
-    // over-bar numbers (for short bars)
-    if (height-y(d)-5 < text.node().getBBox().width) {
-      text.style("text-anchor", "end");
-      text.style("fill", "steelblue");
     }
   }
 

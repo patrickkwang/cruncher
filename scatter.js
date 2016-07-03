@@ -34,7 +34,7 @@ function Scatter() {
     this.svg = parentNode.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
+        .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // add the tooltip area to the webpage
