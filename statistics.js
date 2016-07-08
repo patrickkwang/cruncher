@@ -206,3 +206,15 @@ function subtractArrays(a, b, n) {
     c[i] = a[i]-b[i];
   return c;
 }
+
+function roundBy(a, b) {
+  return b*Math.round(a/b);
+}
+
+function floorBy(a, b) {
+  return b*Math.floor(a/b);
+}
+
+function ceilBy(a, b) {
+  return b*Math.ceil(a/b);
+}
