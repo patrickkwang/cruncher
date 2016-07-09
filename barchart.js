@@ -1,62 +1,49 @@
 function BarChart() {
-  this.init = function(data, parentNode) {
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "chart");
-    parentNode.appendChild(svg);
+  this.init = function(x, data, parentNode) {
+    var dataLims1 = [getMinOfArray(x), getMaxOfArray(x)];
+    var xSpan = dataLims1[1] - dataLims1[0];
+    var barWidth = xSpan/(x.length-1);
+    this.xLims = [dataLims1[0]-barWidth/2, dataLims1[1]+barWidth/2];
+    this.yLims = [0,getMaxOfArray(data)];
+    this.axes = new Axes(parentNode, this.xLims, this.yLims);
 
-    var barWidth = 20,
-      height = 210;
-
-    this.chart = svg;
-    svg.setAttribute("width", barWidth * data.length);
-    svg.setAttribute("height", height);
+    var height = 210;
 
     for (var i=0; i<data.length; i++) {
       if (isNaN(data[i]))
         continue
 
       var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      g.setAttribute("transform", "translate(" + i * barWidth + ",0)")
-      svg.appendChild(g)
+      g.setAttribute("transform", "translate(" + this.axes.xScale(x[i]-barWidth/2) + "," + this.axes.yScale(data[i]) + ")")
+      this.axes.svg.appendChild(g)
       var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
       g.appendChild(rect)
       g.appendChild(text)
-      this.styleBar(rect, text, getMaxOfArray(data), barWidth, height, data[i], i);
-    }
-  }
+      var dataMax = getMaxOfArray(data);
 
-  this.styleBar = function(rect, text, dataMax, barWidth, height, d, i) {
-    // scales data to chart height
-    var y = function(x) {
-      // maps x from the domain [0, dataMax] to the range [height, 0]
-      return (x-0)/(dataMax-0)*0 + (dataMax-x)/(dataMax-0)*height;
-    }
+      // bar and text styling
+      //rect.setAttribute("y", this.axes.yScale(data[i]));
+      rect.setAttribute("width", this.axes.xScale(barWidth) - this.axes.xScale(0) - 1);
+      rect.setAttribute("height", this.axes.yScale(0)-this.axes.yScale(data[i]));
+      rect.style.fill = "steelblue";
 
-    // y position of numbers
-    var yFcn = function(d, obj) {
-      if (height-y(d)-5 < obj.getBBox().width)
-        return y(d)-5;
-      else
-        return y(d)+5;
-    }
+      text.innerHTML = data[i].toString();
+      var xPos = this.axes.xScale(barWidth)-this.axes.xScale(barWidth/2);
+      var yPos = 5;
+      text.setAttribute("x", xPos+yPos); // this makes sense, I promise
+      text.style.alignmentBaseline = "central";
+      text.setAttribute("transform", "rotate(90,{0},{1})".format(xPos, 0));
+      text.setAttribute("id", "boxSize "+i);
 
-    // bar and text styling
-    rect.setAttribute("y", y(d));
-    rect.setAttribute("width", barWidth - 1);
-    rect.setAttribute("height", height - y(d));
-
-    text.innerHTML = d.toString();
-    text.setAttribute("x", barWidth / 2);
-    text.setAttribute("y", yFcn(d, text));
-    text.setAttribute("dy", ".375em");
-    text.setAttribute("transform", "rotate(90,{0},{1})".format(barWidth/2, yFcn(d, text)));
-    text.setAttribute("id", "boxSize "+i);
-
-    // over-bar numbers (for short bars)
-    if (height-y(d)-5 < text.getBBox().width) {
-      text.style.textAnchor = "end";
-      text.style.fill = "steelblue";
+      // over-bar numbers (for short bars)
+      if (rect.getAttribute("height")-yPos < text.getBBox().width) {
+        text.style.textAnchor = "end";
+        text.style.fill = "steelblue";
+        text.setAttribute("x", text.getAttribute("x")-2*yPos);
+      } else {
+        text.style.fill = "white";
+      }
     }
   }
 

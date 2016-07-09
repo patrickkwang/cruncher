@@ -168,12 +168,14 @@ function Dataset() {
       var nBins = 5;
       var arSpan = arMax-arMin;
       var binSz = arSpan/(nBins-1);
+      this.centers = new Array(nBins);
+      for (var i=0; i<nBins; i++)
+        this.centers[i] = arMin + i*binSz;
       this.edges = new Array(nBins+1);
       for (var i=0; i<nBins+1; i++)
         this.edges[i] = arMin - binSz/2 + i*binSz;
       var hist_data = histogram(this.first_col, this.edges);
-      //this.createBar(hist_data);
-      var barchart = new BarChart(hist_data, this.root_node);
+      var barchart = new BarChart(this.centers, hist_data, this.root_node);
     }
 
     // ------ set up button callbacks ------ //
